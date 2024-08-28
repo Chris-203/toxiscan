@@ -10,7 +10,7 @@ import Head from 'next/head';
 
 const CustomAppBar = ({ defaultTitle }) => {
     return(
-      <>
+      <html>
       <Head>
       <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
       </Head>
@@ -29,7 +29,7 @@ const CustomAppBar = ({ defaultTitle }) => {
             </Toolbar>
         </AppBar>
         </Box>
-      </>
+      </html>
     )
 }
 
