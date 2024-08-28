@@ -4,6 +4,7 @@ import { Camera } from "react-camera-pro";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import axios from "axios";
 import { Button, Box, Typography } from "@mui/material";
+import { BarcodeDetector } from 'barcode-detector'
 
 const BarcodeScanner = () => {
   const [barcode, setBarcode] = useState(null);
