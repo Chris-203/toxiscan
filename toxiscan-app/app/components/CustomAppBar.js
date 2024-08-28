@@ -1,6 +1,5 @@
-// CustomAppBar.js
 'use client';
-import 'boxicons';
+// import 'boxicons';
 import { useState, useEffect } from 'react';
 import { Box,Icon, Button, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useRouter } from 'next/navigation';
