@@ -18,13 +18,16 @@ export default function Home() {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
-          height: '100vh',
+          minHeight: '100vh', // Changed from height to minHeight
           width: '100%',
           textAlign: "center",
-          paddingTop: '20vh', // Adjust the padding to move content down
+          display: 'flex', // Added flexbox to center content vertically
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden', // Prevents scrolling issues when zoomed in
        }}>
                 
-        
           <Typography 
           variant="h1" component="h1" gutterBottom 
           color={"common.white"}>
@@ -40,7 +43,6 @@ export default function Home() {
             href="/scanner"
             size= "large"
             style={{
-             
               fontSize: '25px'
             }}
           >
@@ -51,9 +53,7 @@ export default function Home() {
           <strong>Scan.Search.Know</strong>
           </Typography>
         
-          
         </Box>
-        </ThemeProvider>
+      </ThemeProvider>
     );
-  
 }
