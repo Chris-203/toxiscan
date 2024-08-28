@@ -37,7 +37,7 @@ export default function Home() {
             variant="contained"
             color="primary"
             sx={{ mt: 10, mr: 2, borderRadius: 10 }}
-            href="/generate"
+            href="/scanner"
             size= "large"
             style={{
              
