@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import React, { useRef, useState, useEffect } from "react";
 import { Camera } from "react-camera-pro";
-import { BrowserMultiFormatReader } from '@zxing/library';
-import axios from 'axios';
+import { BrowserMultiFormatReader } from "@zxing/library";
+import axios from "axios";
 import { Button, Box, Typography } from "@mui/material";
 
 // const CameraCapture = () => {
@@ -113,8 +113,8 @@ import { Button, Box, Typography } from "@mui/material";
 // export default CameraCapture;
 
 const BarcodeScanner = () => {
-  const [barcode, setBarcode] = useState('');
-  const [error, setError] = useState('');
+  const [barcode, setBarcode] = useState("");
+  const [error, setError] = useState("");
   const [cameraActive, setCameraActive] = useState(true);
 
   useEffect(() => {
@@ -124,20 +124,27 @@ const BarcodeScanner = () => {
     const startScanner = async () => {
       try {
         const devices = await codeReader.listVideoInputDevices();
+        console.log('Video input devices:', devices); // Log available devices
+  
         if (devices.length > 0) {
           selectedDeviceId = devices[0].deviceId;
+          console.log('Selected device ID:', selectedDeviceId); // Log selected device ID
+  
           codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, error) => {
             if (result) {
+              console.log('Barcode detected:', result.getText()); // Log detected barcode
               setBarcode(result.getText());
               setCameraActive(false); // Stop the camera after reading a barcode
             }
             if (error && !(error instanceof ZXing.NotFoundException)) {
               setError(error.message);
+              console.error('Error:', error); // Log errors during decoding
             }
           });
         }
       } catch (err) {
         setError('Error starting scanner: ' + err.message);
+        console.error('Scanner error:', err); // Log scanner startup errors
       }
     };
 
@@ -151,23 +158,23 @@ const BarcodeScanner = () => {
   }, [cameraActive]);
 
   return (
-    <Box sx={{ textAlign: 'center', p: 2 }}>
+    <Box sx={{ textAlign: "center", p: 2 }}>
       <Typography variant="h6">Scan a Barcode</Typography>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
           height: 300,
-          backgroundColor: '#eee',
+          backgroundColor: "#eee",
           marginBottom: 2,
+          flexDirection: "column",
         }}
       >
-        {cameraActive && <video id="video" style={{ width: '100%' }} />}
-        {!cameraActive && (
-          <Typography variant="body1">Barcode: {barcode}</Typography>
-        )}
+        {cameraActive && <video id="video" style={{ width: "100%" }} />}
+
+        <Typography variant="body1">Barcode: {barcode}</Typography>
       </Box>
       {error && <Typography color="error">{error}</Typography>}
     </Box>
