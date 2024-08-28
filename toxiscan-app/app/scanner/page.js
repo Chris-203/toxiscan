@@ -4,7 +4,7 @@ import { Camera } from "react-camera-pro";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import axios from "axios";
 import { Button, Box, Typography } from "@mui/material";
-
+import Quagga from "quagga";
 // const CameraCapture = () => {
 //   const cameraRef = useRef(null);
 //   const [capturedImage, setCapturedImage] = useState(null);
@@ -136,7 +136,7 @@ const BarcodeScanner = () => {
               setBarcode(result.getText());
               setCameraActive(false); // Stop the camera after reading a barcode
             }
-            if (error && !(error instanceof ZXing.NotFoundException)) {
+            if (error && !(error instanceof NotFoundException)) {
               setError(error.message);
               console.error('Error:', error); // Log errors during decoding
             }
