@@ -30,17 +30,26 @@ export default function Home() {
           color={"common.white"}>
             <strong>Toxiscan</strong>
           </Typography>
-          <Typography variant="h5" component="h2" gutterBottom color="common.white">
-          Your ultimate Guide to Healthy and Eco-Friendly Living
+          <Typography variant="h4" component="h2" gutterBottom color="common.white" backgroundColor="common.black">
+          <strong>Your ultimate Guide to Healthy and Eco-Friendly Living</strong>
           </Typography>
           <Button
             variant="contained"
             color="primary"
-            sx={{ mt: 2, mr: 2 }}
+            sx={{ mt: 10, mr: 2 }}
             href="/generate"
+            size= "large"
+            style={{
+              width: '15em',
+              height: '4em' 
+            }}
           >
-            Start Scanning
+            <strong>Start Scanning</strong>
           </Button>
+
+          <Typography variant="h3" component="h2" gutterBottom color="white" paddingTop={10}>
+          <strong>Scan.Search.Know</strong>
+          </Typography>
         
           
         </Box>
