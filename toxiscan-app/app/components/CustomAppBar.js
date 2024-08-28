@@ -9,6 +9,29 @@ import Script from 'next/script'; // Import Script from next/script
 
 
 const CustomAppBar = ({ defaultTitle }) => {
+    
+    const [open, setOpen] = useState(false);
+    const router = useRouter();
+    const toggleDrawer = (newOpen) => () => {
+        setOpen(newOpen);
+    };
+    const DrawerList = (
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+            <List>
+                {['Home', 'Search', 'About Us' , 'FAQ' , 'Contact Us'].map((text) => (
+                    <ListItem key={text} disablePadding>
+                        <ListItemButton onClick={() => router.push(text === "Search" ? "/scanner" : text === "Home" ? "/"
+                             : text === "About Us" ? "/about":text === "FAQ" ? "/":"/")}>
+                            <ListItemText primary={text} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
+
+
+
     return(
     <>
       <Script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js" strategy="beforeInteractive" />
@@ -17,9 +40,9 @@ const CustomAppBar = ({ defaultTitle }) => {
         <AppBar position="fixed" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
             <Toolbar>
             <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            {/* Replace Typography with Boxicons */}
+            <IconButton onClick={toggleDrawer(true)}>
             <box-icon name='barcode-reader' size="lg" color = "white"></box-icon>
-            {/* Or use a different icon and adjust size/color as needed */}
+            </IconButton>
           </Box>
                     <Button variant="outlined" color="" size="large" sx={{ margin: 2 }} href="">
                         Login
@@ -27,6 +50,10 @@ const CustomAppBar = ({ defaultTitle }) => {
                 
             </Toolbar>
         </AppBar>
+        <Drawer open={open} onClose={toggleDrawer(false)}
+                PaperProps={{ sx: { backgroundColor: "primary.main", color: "common.white" } }}>
+                {DrawerList}
+            </Drawer>
         </Box>
     </>
       
