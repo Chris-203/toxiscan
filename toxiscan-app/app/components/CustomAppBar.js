@@ -11,10 +11,9 @@ import Script from 'next/script'; // Import Script from next/script
 
 const CustomAppBar = ({ defaultTitle }) => {
     return(
-      <>
-      <Head>
+    <>
       <Script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js" strategy="beforeInteractive" />
-      </Head>
+    
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
             <Toolbar>
@@ -30,7 +29,8 @@ const CustomAppBar = ({ defaultTitle }) => {
             </Toolbar>
         </AppBar>
         </Box>
-      </>
+    </>
+      
     )
 }
 
