@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Camera } from "react-camera-pro";
 import { BrowserMultiFormatReader } from '@zxing/library';
 import axios from 'axios';
+import { Button, Box, Typography } from "@mui/material";
 
 // const CameraCapture = () => {
 //   const cameraRef = useRef(null);
@@ -112,103 +113,64 @@ import axios from 'axios';
 // export default CameraCapture;
 
 const BarcodeScanner = () => {
-  const cameraRef = useRef(null);
-  const [barcode, setBarcode] = useState(null);
-  const [lastScannedBarcode, setLastScannedBarcode] = useState(null);
-  const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [cameraSupported, setCameraSupported] = useState(false);
-
-  const baseURL = 'https://world.openfoodfacts.org/api/v0/product/';
-  const userAgent = 'MyApp - Web - Version 1.0 - https://myappwebsite.com';
-  const reader = new BrowserMultiFormatReader();
+  const [barcode, setBarcode] = useState('');
+  const [error, setError] = useState('');
+  const [cameraActive, setCameraActive] = useState(true);
 
   useEffect(() => {
-    // Check if the Media Devices API is supported
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-      setCameraSupported(true);
-    } else {
-      setErrorMessage('Camera access is not supported by your device or browser.');
-      setCameraSupported(false);
-    }
-  }, []);
+    const codeReader = new BrowserMultiFormatReader();
+    let selectedDeviceId;
 
-  useEffect(() => {
-    if (cameraSupported) {
-      const scanBarcode = async () => {
-        if (cameraRef.current) {
-          try {
-            const video = cameraRef.current.video;
-            const result = await reader.decodeFromVideoDevice(null, video);
-            if (result && result.text !== lastScannedBarcode) {
-              setBarcode(result.text);
-              setLastScannedBarcode(result.text);
-              fetchProductData(result.text);
+    const startScanner = async () => {
+      try {
+        const devices = await codeReader.listVideoInputDevices();
+        if (devices.length > 0) {
+          selectedDeviceId = devices[0].deviceId;
+          codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, error) => {
+            if (result) {
+              setBarcode(result.getText());
+              setCameraActive(false); // Stop the camera after reading a barcode
             }
-          } catch (error) {
-            console.error('Error scanning barcode:', error);
-            setErrorMessage('Error scanning barcode. Please try again.');
-          }
+            if (error && !(error instanceof ZXing.NotFoundException)) {
+              setError(error.message);
+            }
+          });
         }
-      };
-
-      const interval = setInterval(scanBarcode, 1000); // Scan every second
-      return () => clearInterval(interval);
-    }
-  }, [reader, lastScannedBarcode, cameraSupported]);
-
-  const fetchProductData = async (barcode) => {
-    setLoading(true);
-    setFeedbackMessage('');
-    setErrorMessage('');
-    try {
-      const response = await axios.get(`${baseURL}${barcode}.json`, {
-        headers: {
-          'User-Agent': userAgent,
-        },
-      });
-
-      const productData = response.data;
-
-      if (productData.status === 1) {
-        setFeedbackMessage(`Product found: ${productData.product.product_name}`);
-      } else {
-        setFeedbackMessage('Product not found.');
+      } catch (err) {
+        setError('Error starting scanner: ' + err.message);
       }
-    } catch (error) {
-      console.error('Error fetching product data:', error);
-      setErrorMessage('Error fetching product data. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  const handleCameraError = (error) => {
-    console.error('Camera error:', error);
-    setErrorMessage('Camera access denied or unavailable.');
-  };
+    if (cameraActive) {
+      startScanner();
+    }
+
+    return () => {
+      codeReader.reset();
+    };
+  }, [cameraActive]);
 
   return (
-    <div>
-      {cameraSupported ? (
-        <>
-          <Camera 
-            ref={cameraRef} 
-            aspectRatio={16 / 9} 
-            facingMode="environment" 
-            onError={handleCameraError}
-          />
-          <p>Point your camera at a barcode to scan.</p>
-        </>
-      ) : (
-        <p style={{ color: 'red' }}>{errorMessage}</p>
-      )}
-      {loading && <p>Loading product data...</p>}
-      {feedbackMessage && <p>{feedbackMessage}</p>}
-      {errorMessage && !loading && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      {barcode && <p>Last scanned barcode: {barcode}</p>}
-    </div>
+    <Box sx={{ textAlign: 'center', p: 2 }}>
+      <Typography variant="h6">Scan a Barcode</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          height: 300,
+          backgroundColor: '#eee',
+          marginBottom: 2,
+        }}
+      >
+        {cameraActive && <video id="video" style={{ width: '100%' }} />}
+        {!cameraActive && (
+          <Typography variant="body1">Barcode: {barcode}</Typography>
+        )}
+      </Box>
+      {error && <Typography color="error">{error}</Typography>}
+    </Box>
   );
 };
 
