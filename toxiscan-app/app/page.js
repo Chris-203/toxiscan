@@ -1,8 +1,9 @@
 'use client'
-import { Button, Box, Typography, ThemeProvider, useTheme } from "@mui/material";
+import { Button, Box, Typography, ThemeProvider, useTheme, Toolbar } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CustomTheme from './components/Theme';
+import CustomAppBar from './components/CustomAppBar';
 
 
 export default function Home() {
@@ -10,6 +11,8 @@ export default function Home() {
     const router = useRouter();
     return (
       <ThemeProvider theme={CustomTheme}>
+        <CustomAppBar />
+        <Toolbar /> {/* Add Toolbar to create space for the AppBar */}
         <Box sx={{
           backgroundImage: "url('/images/background.png')",
           backgroundSize: 'cover',
