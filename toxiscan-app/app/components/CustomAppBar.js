@@ -1,25 +1,35 @@
 // CustomAppBar.js
 'use client';
+import 'boxicons';
 import { useState, useEffect } from 'react';
-import { Box, Button, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Box,Icon, Button, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import Head from 'next/head';
+
 
 
 const CustomAppBar = ({ defaultTitle }) => {
     return(
+      <>
+      <Head>
+      <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+      </Head>
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
             <Toolbar>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Toxiscan Icon
-                </Typography>
-                    <Button variant="outlined" color="white" size="large" sx={{ margin: 2 }} href="">
+            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            {/* Replace Typography with Boxicons */}
+            <box-icon name='barcode-reader' size="lg" color = "white"></box-icon>
+            {/* Or use a different icon and adjust size/color as needed */}
+          </Box>
+                    <Button variant="outlined" color="" size="large" sx={{ margin: 2 }} href="">
                         Login
                     </Button>
                 
             </Toolbar>
         </AppBar>
         </Box>
+      </>
     )
 }
 
