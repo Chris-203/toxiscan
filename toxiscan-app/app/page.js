@@ -36,12 +36,12 @@ export default function Home() {
           <Button
             variant="contained"
             color="primary"
-            sx={{ mt: 10, mr: 2 }}
+            sx={{ mt: 10, mr: 2, borderRadius: 10 }}
             href="/generate"
             size= "large"
             style={{
-              width: '15em',
-              height: '4em' 
+             
+              fontSize: '25px'
             }}
           >
             <strong>Start Scanning</strong>
