@@ -10,9 +10,9 @@ import Head from 'next/head';
 
 const CustomAppBar = ({ defaultTitle }) => {
     return(
-      <html>
+      <>
       <Head>
-      <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+      <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js" async></script>
       </Head>
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
@@ -29,7 +29,7 @@ const CustomAppBar = ({ defaultTitle }) => {
             </Toolbar>
         </AppBar>
         </Box>
-      </html>
+      </>
     )
 }
 
