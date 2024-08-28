@@ -4,180 +4,147 @@ import { Camera } from "react-camera-pro";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import axios from "axios";
 import { Button, Box, Typography } from "@mui/material";
-import Quagga from "quagga";
-// const CameraCapture = () => {
-//   const cameraRef = useRef(null);
-//   const [capturedImage, setCapturedImage] = useState(null);
-//   const [isFrontCamera, setIsFrontCamera] = useState(true);
-//   const [decodedText, setDecodedText] = useState(null);
-//   const [productInfo, setProductInfo] = useState(null);
-
-//   const captureImage = async () => {
-//     if (cameraRef.current) {
-//       const imageSrc = await cameraRef.current.takePhoto();
-//       console.log("Captured Image Source:", imageSrc);
-//       setCapturedImage(imageSrc);
-//     }
-//   };
-
-//   const toggleCamera = () => {
-//     setIsFrontCamera((prevState) => !prevState);
-//     if (cameraRef.current) {
-//       cameraRef.current.switchCamera();
-//     }
-//   };
-
-//   const handleDecode = async (text) => {
-//     console.log("Decoded Text:", text);
-//     setDecodedText(text);
-
-//     if (text) {
-//       // Fetch product information
-//       try {
-//         const response = await fetch(
-//           `https://world.openfoodfacts.org/api/v0/product/${text}`
-//         );
-//         const data = await response.json();
-//         if (data.product) {
-//           console.log("Product Data:", data.product); // Log product data
-//           setProductInfo(data.product);
-//         } else {
-//           console.error("Product not found");
-//           setProductInfo(null);
-//         }
-//       } catch (error) {
-//         console.error("Error fetching product data:", error);
-//         setProductInfo(null);
-//       }
-//     }
-//   };
-
-//   return (
-//     <div>
-//       {/* <CustomAppBar /> */}
-//       <div
-//         style={{
-//           position: "relative",
-//           width: "100%",
-//           height: "50vh",
-//           marginTop: "70px",
-//         }}
-//       >
-//         <Camera
-//           ref={cameraRef}
-//           style={{ width: "100%", height: "100%" }}
-//           facingMode={isFrontCamera ? "user" : "environment"}
-//         />
-//         <div
-//           style={{
-//             position: "absolute",
-//             bottom: 0,
-//             width: "100%",
-//             padding: "10px",
-//             boxSizing: "border-box",
-//           }}
-//         >
-//           <button onClick={captureImage}>Capture Image</button>
-//           <button onClick={toggleCamera} style={{ marginLeft: "10px" }}>
-//             Switch Camera
-//           </button>
-//           {capturedImage && (
-//             <div>
-//               <h3>Captured Image:</h3>
-//               <img
-//                 src={capturedImage}
-//                 alt="Captured"
-//                 style={{ width: "100%", height: "auto" }}
-//               />
-//               {/* <BarcodeDecoder
-//                 imageSrc={capturedImage}
-//                 onDecode={handleDecode}
-//               /> */}
-//             </div>
-//           )}
-//           {decodedText && <p>Decoded Text: {decodedText}</p>}
-//           {productInfo && (
-//             <div>
-//               <h3>Product Information:</h3>
-//               <p>Name: {productInfo.product_name || "N/A"}</p>
-//               <p>Brand: {productInfo.brands || "N/A"}</p>
-//               <p>Ingredients: {productInfo.ingredients_text || "N/A"}</p>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CameraCapture;
 
 const BarcodeScanner = () => {
-  const [barcode, setBarcode] = useState("");
-  const [error, setError] = useState("");
-  const [cameraActive, setCameraActive] = useState(true);
+  const [barcode, setBarcode] = useState(null);
+  const [error, setError] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
-    const codeReader = new BrowserMultiFormatReader();
-    let selectedDeviceId;
-
-    const startScanner = async () => {
+    const startCamera = async () => {
       try {
-        const devices = await codeReader.listVideoInputDevices();
-        console.log('Video input devices:', devices); // Log available devices
-  
-        if (devices.length > 0) {
-          selectedDeviceId = devices[0].deviceId;
-          console.log('Selected device ID:', selectedDeviceId); // Log selected device ID
-  
-          codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, error) => {
-            if (result) {
-              console.log('Barcode detected:', result.getText()); // Log detected barcode
-              setBarcode(result.getText());
-              setCameraActive(false); // Stop the camera after reading a barcode
-            }
-            if (error && !(error instanceof NotFoundException)) {
-              setError(error.message);
-              console.error('Error:', error); // Log errors during decoding
-            }
-          });
-        }
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+
+        videoRef.current.onplaying = () => {
+          setIsSearching(true);
+          detectBarcode();
+        };
+
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.width = videoRef.current.videoWidth;
+          videoRef.current.height = videoRef.current.videoHeight;
+        };
+
       } catch (err) {
-        setError('Error starting scanner: ' + err.message);
-        console.error('Scanner error:', err); // Log scanner startup errors
+        console.error('Error accessing camera: ', err);
+        setError('Error accessing camera.');
       }
     };
 
-    if (cameraActive) {
-      startScanner();
-    }
+    const detectBarcode = async () => {
+      if (!videoRef.current || !isSearching) return;
+
+      try {
+        const barcodeDetector = new BarcodeDetector({ formats: ['qr_code', 'ean_13'] });
+        const detect = async () => {
+          try {
+            const barcodes = await barcodeDetector.detect(videoRef.current);
+            if (barcodes.length > 0) {
+              setBarcode(barcodes[0].rawValue);
+              setIsScanning(true);
+              setIsSearching(false);
+              stopCamera(); // Stop the camera once a barcode is detected
+              return; // Stop scanning once a barcode is detected
+            } else {
+              setBarcode(null);
+            }
+          } catch (err) {
+            console.error('Error detecting barcode: ', err);
+            setError('Error detecting barcode.');
+          }
+          if (isSearching) {
+            requestAnimationFrame(detect); // Continue scanning if still searching
+          }
+        };
+        detect();
+      } catch (err) {
+        console.error('Barcode Detector API is not supported or failed:', err);
+        setError('Barcode Detection API is not supported.');
+        setIsSearching(false);
+      }
+    };
+
+    const stopCamera = () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null; // Clear the srcObject
+      }
+    };
+
+    startCamera();
 
     return () => {
-      codeReader.reset();
+      stopCamera(); // Ensure the camera stops when the component is unmounted
     };
-  }, [cameraActive]);
+  }, [isSearching]);
 
   return (
-    <Box sx={{ textAlign: "center", p: 2 }}>
-      <Typography variant="h6">Scan a Barcode</Typography>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: 300,
-          backgroundColor: "#eee",
-          marginBottom: 2,
-          flexDirection: "column",
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <video
+        ref={videoRef}
+        width="300"
+        height="200"
+        style={{
+          border: '1px solid black',
+          display: 'block',
+        }}
+      />
+      {isSearching && !isScanning && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'yellow',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            padding: '10px',
+            borderRadius: '5px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            zIndex: 1,
+          }}
+        >
+          Searching for Barcode...
+        </div>
+      )}
+      {isScanning && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'green',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            padding: '10px',
+            borderRadius: '5px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            zIndex: 1,
+          }}
+        >
+          Scanning Barcode...
+        </div>
+      )}
+      <div
+        style={{
+          marginTop: '10px',
+          color: barcode ? 'green' : 'red',
+          fontSize: '18px',
+          fontWeight: 'bold',
         }}
       >
-        {cameraActive && <video id="video" style={{ width: "100%" }} />}
-
-        <Typography variant="body1">Barcode: {barcode}</Typography>
-      </Box>
-      {error && <Typography color="error">{error}</Typography>}
-    </Box>
+        Detected Barcode: {barcode || 'None'}
+      </div>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+    </div>
   );
 };
 
