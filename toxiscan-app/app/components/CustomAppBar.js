@@ -37,7 +37,7 @@ const CustomAppBar = ({ defaultTitle }) => {
       <Script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js" strategy="beforeInteractive" />
     
         <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="fixed" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
+        <AppBar position="fixed" sx={{ backgroundColor: 'green', color: 'common.white' }}>
             <Toolbar>
             <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <IconButton onClick={toggleDrawer(true)}>
