@@ -11,28 +11,33 @@ const FAQ = () => {
   const faqs = [
     {
       question: "What is this app about?",
-      answer: "This app allows you to scan food items to get a detailed list of ingredients and determine if any of them are toxic.",
+      answer: "This app allows you to scan food items to get a detailed list of ingredients and determine if any of them are harmful towards your health.",
     },
     {
       question: "How do I create an account?",
-      answer: "To create an account, click on the 'Sign Up' button and follow the instructions.",
+      answer: "To create an account, click on the 'Sign Up' button and follow the instructions. You can also always sign in using Google.",
     },
     {
       question: "How do I use the app to scan food items?",
-      answer: "You can scan items using the scan button on the search bar.Simply open the app, use the scan feature to capture the barcode of the food packaging, and the app will display the ingredients list along with any potential toxic substances.",
+      answer: "You can scan items using the scan button on the search bar.Simply open the app, use the scan feature to capture the barcode of the food packaging, and the app will display the ingredients list along with the Nutri Score , the Nova Score , and the Eco Score if available.",
     },
     {
       question: "Can I use the app for foods without barcodes or labels?",
-      answer: "Currently, the app is optimized for scanning packaged foods with barcodes. For unlabeled or homemade foods, the app may not provide ingredients information.",
+      answer: "Currently, the app is optimized for scanning packaged foods with barcodes. For unlabeled or homemade foods, the app may not provide ingredients information. You can also use our search feature to search products by name.",
     },
     {
       question: " Is the app accurate in identifying toxic ingredients?",
-      answer: "The app is designed to provide accurate information based on a comprehensive and research-backed database. However, it's always a good idea to verify with additional sources if you have specific concerns about certain ingredients.",
+      answer: "The app is designed to provide accurate information based on a comprehensive and research-backed database. We are using a reliable and open source food database called 'Open Food Facts', however, it's always a good idea to verify with additional sources if you have specific concerns about certain ingredients.",
     },
 
     {
       question: "How do I contact support?",
       answer: "You can contact support by emailing your name, email, and message using the contact form on the website and our team will get back to as soon as possible.",
+    },
+
+    {
+      question: "Is Toxiscan Non-profit?",
+      answer: "Yes, the Toxiscan team does not gain any profit from this web app, Toxiscan is the creation of three software engineers working on it as a final project for their fellowship.",
     },
     
   ];
