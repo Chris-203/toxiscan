@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Typography, Accordion, AccordionSummary, AccordionDetails, Container, Box, Toolbar, ThemeProvider, useTheme } from '@mui/material';
+import { Typography,GlobalStyles, Accordion, AccordionSummary, AccordionDetails, Container, Box, Toolbar, ThemeProvider, useTheme } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CustomAppBar from '../components/CustomAppBar';
 import CustomTheme from '../components/Theme';
@@ -44,11 +44,19 @@ const FAQ = () => {
 
   return (
     <ThemeProvider theme={CustomTheme}>
+            {/* Global Styles to set the background color of the whole screen */}
+            <GlobalStyles
+        styles={{
+          body: {
+            backgroundColor: '#94a187', // Set your desired background color here
+          },
+        }}
+      />
       <CustomAppBar />
       <Toolbar /> {/* Ensure enough space for the AppBar */}
       <Container sx={{ mt: 8, mb: 4 }}>
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold' }}>
             Frequently Asked Questions
           </Typography>
         </Box>
@@ -63,7 +71,12 @@ const FAQ = () => {
                 >
               <Typography variant="h6">{faq.question}</Typography>
               </AccordionSummary>
-              <AccordionDetails>
+              <AccordionDetails
+                  sx={{ 
+                    bgcolor: '#b3c0a5', // Set your desired background color here for the drop-down content
+                    color: 'black', // Optional: Set text color to ensure good contrast
+                  }}
+              >
                 <Typography>{faq.answer}</Typography>
               </AccordionDetails>
             </Accordion>
