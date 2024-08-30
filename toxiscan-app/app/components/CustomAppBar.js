@@ -5,6 +5,7 @@ import { Box,Icon, Button, AppBar, Toolbar, Typography, IconButton, Drawer, List
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import Script from 'next/script'; // Import Script from next/script
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 
 
 
@@ -12,6 +13,7 @@ const CustomAppBar = ({ defaultTitle }) => {
     
     const [open, setOpen] = useState(false);
     const router = useRouter();
+    const { user } = useUser(); // Get current user details from Clerk
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
     };
@@ -40,14 +42,23 @@ const CustomAppBar = ({ defaultTitle }) => {
         <AppBar position="fixed" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
             <Toolbar>
             <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <IconButton onClick={toggleDrawer(true)}>
+            <IconButton onClick={toggleDrawer(true)} sx={{ zIndex: 10 }}>
             <box-icon name='barcode-reader' size="lg" color = "white"></box-icon>
             </IconButton>
           </Box>
-                    <Button variant="outlined" color="inherit" size="large" sx={{ margin: 2 }} href="">
-                        Login
+
+        {/* Show login and signup buttons when the user is signed out */}
+        <SignedOut>
+                    <Button variant="outlined" color="inherit" size="large" sx={{ margin: 2 }} href="/sign-in">
+                    Sign In
                     </Button>
-                    <Button variant="outlined" color="inherit" size="large" sx={{ margin: 2 }} href="">Sign Up</Button>
+                    <Button variant="outlined" color="inherit" size="large" sx={{ margin: 2 }} href="/sign-up">Sign Up</Button>
+        </SignedOut>
+
+        {/* Show user button when the user is signed in */}
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
                 
             </Toolbar>
         </AppBar>
