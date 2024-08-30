@@ -14,7 +14,7 @@ export default function Home() {
         <CustomAppBar />
         <Toolbar /> {/* Add Toolbar to create space for the AppBar */}
         <Box sx={{
-          backgroundImage: "url('/images/background.png')",
+          backgroundImage: "url('/images/whitebackground.jpg')",
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
@@ -30,10 +30,10 @@ export default function Home() {
                 
           <Typography 
           variant="h1" component="h1" gutterBottom 
-          color={"common.white"}>
+          color={"black"}>
             <strong>Toxiscan</strong>
           </Typography>
-          <Typography variant="h4" component="h2" gutterBottom color="common.white" backgroundColor="common.black">
+          <Typography variant="h4" component="h2" gutterBottom color="black">
           <strong>Your ultimate Guide to Healthy and Eco-Friendly Living</strong>
           </Typography>
           <Button
@@ -49,7 +49,7 @@ export default function Home() {
             <strong>Start Scanning</strong>
           </Button>
 
-          <Typography variant="h3" component="h2" gutterBottom color="white" paddingTop={10}>
+          <Typography variant="h3" component="h2" gutterBottom color="black" paddingTop={10}>
           <strong>Scan.Search.Know</strong>
           </Typography>
         
