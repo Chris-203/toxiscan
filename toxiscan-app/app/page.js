@@ -14,7 +14,7 @@ export default function Home() {
         <CustomAppBar />
         <Toolbar /> {/* Add Toolbar to create space for the AppBar */}
         <Box sx={{
-          backgroundImage: "url('/images/whitebackground.jpg')",
+          backgroundImage: "url('/images/vegbackground.jpg')",
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
