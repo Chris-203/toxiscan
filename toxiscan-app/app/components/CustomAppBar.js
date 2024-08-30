@@ -57,7 +57,18 @@ const CustomAppBar = ({ defaultTitle }) => {
 
         {/* Show user button when the user is signed in */}
         <SignedIn>
-          <UserButton />
+        <Box sx={{ width: 56, height: 56 }}>
+                                <UserButton
+                                    appearance={{
+                                        elements: {
+                                            userButtonAvatarBox: {
+                                                width: '90%',
+                                                height: '90%',
+                                            },
+                                        },
+                                    }}
+                                />
+                            </Box>
         </SignedIn>
                 
             </Toolbar>
