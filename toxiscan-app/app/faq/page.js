@@ -48,7 +48,7 @@ const FAQ = () => {
             <GlobalStyles
         styles={{
           body: {
-            backgroundColor: '#94a187', // Set your desired background color here
+            backgroundColor: '#9fdf9c', // Set your desired background color here
           },
         }}
       />
@@ -73,7 +73,7 @@ const FAQ = () => {
               </AccordionSummary>
               <AccordionDetails
                   sx={{ 
-                    bgcolor: '#b3c0a5', // Set your desired background color here for the drop-down content
+                    bgcolor: '#c6ebc3', // Set your desired background color here for the drop-down content
                     color: 'black', // Optional: Set text color to ensure good contrast
                   }}
               >

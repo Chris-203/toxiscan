@@ -13,7 +13,7 @@ export default function AboutUs() {
                   <GlobalStyles
         styles={{
           body: {
-            backgroundColor: '#94a187', // Set your desired background color here
+            backgroundColor: '#9fdf9c', // Set your desired background color here
           },
         }}
       />

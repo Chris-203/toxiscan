@@ -55,7 +55,7 @@ export default function contactPage() {
       <GlobalStyles
         styles={{
           body: {
-            backgroundColor: '#94a187', // Set your desired background color here
+            backgroundColor: '#9fdf9c', // Set your desired background color here
           },
         }}
       />
@@ -75,7 +75,7 @@ export default function contactPage() {
         boxShadow: 3,
         borderRadius: 2,
         marginTop: '50px', // Added margin to push the form down
-        bgcolor: '#b3c0a5',
+        bgcolor: '#c6ebc3',
       }}
     >
       <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
