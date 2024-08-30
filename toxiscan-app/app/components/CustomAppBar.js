@@ -24,7 +24,9 @@ const CustomAppBar = ({ defaultTitle }) => {
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={() => router.push(text === "Search" ? "/search" : text === "Home" ? "/"
                              : text === "About Us" ? "/about":text === "FAQ" ? "/faq":"/contact")}>
-                            <ListItemText primary={text} />
+                            <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom:4}}>
+                                {text}
+                            </Typography>
                         </ListItemButton>
                     </ListItem>
                 ))}
