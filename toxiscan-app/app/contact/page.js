@@ -1,5 +1,5 @@
 'use client'
-import { Button, Box, Typography, ThemeProvider, useTheme, Toolbar, Grid, TextField, Card, CardContent} from "@mui/material";
+import { Button, Box, Typography,GlobalStyles, ThemeProvider, useTheme, Toolbar, Grid, TextField, Card, CardContent} from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CustomTheme from '../components/Theme';
@@ -51,6 +51,14 @@ export default function contactPage() {
       };
     return (
         <ThemeProvider theme={CustomTheme}>
+      {/* Global Styles to set the background color of the whole screen */}
+      <GlobalStyles
+        styles={{
+          body: {
+            backgroundColor: '#94a187', // Set your desired background color here
+          },
+        }}
+      />
         <CustomAppBar />
         <Toolbar/> {/* Ensure enough space for the AppBar */}
         <Box
@@ -67,6 +75,7 @@ export default function contactPage() {
         boxShadow: 3,
         borderRadius: 2,
         marginTop: '50px', // Added margin to push the form down
+        bgcolor: '#b3c0a5',
       }}
     >
       <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
