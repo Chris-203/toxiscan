@@ -21,7 +21,7 @@ const CustomAppBar = ({ defaultTitle }) => {
                 {['Home', 'Search', 'About Us' , 'FAQ' , 'Contact Us'].map((text) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={() => router.push(text === "Search" ? "/scanner" : text === "Home" ? "/"
-                             : text === "About Us" ? "/about":text === "FAQ" ? "/":"/")}>
+                             : text === "About Us" ? "/about":text === "FAQ" ? "/faq":"/contact")}>
                             <ListItemText primary={text} />
                         </ListItemButton>
                     </ListItem>
