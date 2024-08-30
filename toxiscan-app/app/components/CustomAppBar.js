@@ -44,9 +44,10 @@ const CustomAppBar = ({ defaultTitle }) => {
             <box-icon name='barcode-reader' size="lg" color = "white"></box-icon>
             </IconButton>
           </Box>
-                    <Button variant="outlined" color="" size="large" sx={{ margin: 2 }} href="">
+                    <Button variant="outlined" color="inherit" size="large" sx={{ margin: 2 }} href="">
                         Login
                     </Button>
+                    <Button variant="outlined" color="inherit" size="large" sx={{ margin: 2 }} href="">Sign Up</Button>
                 
             </Toolbar>
         </AppBar>
