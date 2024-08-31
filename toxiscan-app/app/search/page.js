@@ -3,19 +3,22 @@ import {
     Button,
     Box,
     Typography,
+    Tooltip,
     ThemeProvider,
     useTheme,
     Toolbar,
     Stack,
     Paper,
-    TextField, // Import TextField component
+    TextField,
+    IconButton, // Import IconButton component
 } from "@mui/material";
+import FullscreenIcon from "@mui/icons-material/Fullscreen"; // Correctly import the FullscreenIcon
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
 import { useEffect, useState } from "react";
-import { NoFood as NoFoodIcon } from "@mui/icons-material"; // Import the NoFoodIcon
+import { NoFood as NoFoodIcon } from "@mui/icons-material";
 
 export default function Home() {
     const theme = useTheme();
@@ -23,7 +26,7 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(""); // State for search term
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         async function fetchProducts() {
@@ -46,6 +49,11 @@ export default function Home() {
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
+    };
+
+    const handleSearchClick = () => {
+        router.push("/scanner")
+       
     };
 
     const filteredProducts = products.filter((product) =>
@@ -72,19 +80,39 @@ export default function Home() {
                     textAlign: "center",
                 }}
             >
-                {/* Search Bar */}
-                <TextField
-                    variant="outlined"
-                    placeholder="Search Products"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    sx={{ mb: 3, width: "100%", maxWidth: 400 }}
-                />
+                {/* Search Bar with Icon Button */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 3,
+                        marginTop: 5,
+                        marginLeft: 10,
+                    }}
+                >
+                    <TextField
+                        variant="outlined"
+                        placeholder="Search Products"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        sx={{ width: "100%", maxWidth: 400 }}
+                    />
+                  <Tooltip title="Use Scanner" placement="right" arrow >
+                    <IconButton
+                        color="primary"
+                        onClick={handleSearchClick}
+                        sx={{ ml: 1 }} // Add some margin to the left of the button
+                    >
+                        <FullscreenIcon sx={{ fontSize: 100 }} />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
 
                 <Typography variant="h4" gutterBottom>
                     Products by Nova Score
                 </Typography>
-                
+
                 <Box
                     sx={{
                         display: 'flex',
@@ -101,7 +129,7 @@ export default function Home() {
                                 key={index}
                                 sx={{
                                     width: { xs: '100%', sm: '45%', md: '30%', lg: '22%' },
-                                    mb: 3, // Margin bottom for spacing between rows
+                                    mb: 3,
                                     display: 'flex',
                                     justifyContent: 'center',
                                 }}
@@ -116,7 +144,7 @@ export default function Home() {
                                             style={{ objectFit: "contain" }}
                                         />
                                     ) : (
-                                        <NoFoodIcon style={{ fontSize: 200 }} /> // Display NoFoodIcon if no image
+                                        <NoFoodIcon style={{ fontSize: 200 }} />
                                     )}
                                     <Typography variant="h6" gutterBottom>
                                         {product.product_name || "Unknown Product"}
