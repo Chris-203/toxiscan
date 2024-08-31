@@ -10,7 +10,8 @@ import {
     TextField,
     IconButton,
     Select,
-    MenuItem, // Import Select and MenuItem components
+    MenuItem, 
+    Button, // Import Button for pagination
 } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,7 @@ import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
 import { useEffect, useState } from "react";
 import { NoFood as NoFoodIcon } from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search"; // Import SearchIcon
 
 export default function Home() {
     const theme = useTheme();
@@ -29,6 +31,11 @@ export default function Home() {
     const [country, setCountry] = useState("united states");
     const [sortBy, setSortBy] = useState("popularity");
     const [category, setCategory] = useState(""); // New state for category
+    const [page, setPage] = useState(1); // Add state for current page
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
 
     useEffect(() => {
         async function fetchProducts() {
@@ -39,7 +46,8 @@ export default function Home() {
                     tag_0: country,
                     sort_by: sortBy,
                     page_size: "50",
-                    category: category // Include category in the query
+                    page: page.toString(), // Add page to the query
+                    category: category 
                 }).toString();
 
                 const response = await fetch(`/api/products?${query}`);
@@ -56,13 +64,13 @@ export default function Home() {
         }
 
         fetchProducts();
-    }, [country, sortBy, category]); // Add category as a dependency
+    }, [country, sortBy, category, page]); // Add page as a dependency
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    const handleSearchClick = () => {
+    const handleScanClick = () => {
         router.push("/scanner");
     };
 
@@ -77,6 +85,7 @@ export default function Home() {
     if (error) {
         return <Typography>Error: {error}</Typography>;
     }
+
 
     return (
         <ThemeProvider theme={CustomTheme}>
@@ -112,7 +121,7 @@ export default function Home() {
                     <Tooltip title="Use Scanner" placement="right" arrow >
                         <IconButton
                             color="primary"
-                            onClick={handleSearchClick}
+                            onClick={handleScanClick}
                             sx={{ ml: 1 }}
                         >
                             <FullscreenIcon sx={{ fontSize: 100 }} />
@@ -137,6 +146,7 @@ export default function Home() {
                         variant="outlined"
                         sx={{ minWidth: 200 }}
                     >
+                        <MenuItem value="">Countries</MenuItem>
                         <MenuItem value="united states">United States</MenuItem>
                         <MenuItem value="united kingdom">United Kingdom</MenuItem>
                         <MenuItem value="bangladesh">Bangladesh</MenuItem>
@@ -167,6 +177,7 @@ export default function Home() {
                         variant="outlined"
                         sx={{ minWidth: 200 }}
                     >
+                        <MenuItem value="">Sort By</MenuItem>
                         <MenuItem value="popularity">Popularity</MenuItem>
                         <MenuItem value="nutriscore_score">Nutri Score</MenuItem>
                         <MenuItem value="ecoscore_score">Eco Score</MenuItem>
@@ -182,17 +193,19 @@ export default function Home() {
                     >
                         <MenuItem value="">All Categories</MenuItem>
                         <MenuItem value="breads">Breads</MenuItem>
+                        <MenuItem value="breakfasts">Breakfasts</MenuItem>
                         <MenuItem value="canned foods">Canned Foods</MenuItem>
                         <MenuItem value="cereals">Cereals</MenuItem>
                         <MenuItem value="cheeses">Cheeses</MenuItem>
                         <MenuItem value="chips">Chips</MenuItem>
                         <MenuItem value="chocolates">Chocolates</MenuItem>
-                        <MenuItem value="dairy">Dairy</MenuItem>
+                        <MenuItem value="dairies">Dairies</MenuItem>
                         <MenuItem value="frozen foods">Frozen Foods</MenuItem>
+                        <MenuItem value="groceries">Groceries</MenuItem>
                         <MenuItem value="juice">Juice</MenuItem>
                         <MenuItem value="meats">Meats</MenuItem>
                         <MenuItem value="pastas">Pastas</MenuItem>
-                        <MenuItem value="plant-based foods">Plant Based Foods</MenuItem>
+                        <MenuItem value="plant-based-foods">Plant Based Foods</MenuItem>
                         <MenuItem value="seafoods">Seafoods</MenuItem>
                         <MenuItem value="snacks">Snacks</MenuItem>
                     </Select>
@@ -245,6 +258,36 @@ export default function Home() {
                         <Typography>No products found.</Typography>
                     )}
                 </Box>
+                
+                {/* Pagination Controls*/}
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                    <Button
+                        variant="contained"
+                        disabled={page === 1}
+                        onClick={() => handlePageChange(1)} // Go to the first page
+                    >
+                        First Page
+                    </Button>
+                    <Button
+                        variant="contained"
+                        disabled={page === 1}
+                        onClick={() => handlePageChange(page - 1)}
+                        sx={{ mx: 2 }}
+                    >
+                        Previous
+                    </Button>
+                    <Typography variant="body1" sx={{ mx: 2 }}>
+                        Page {page}
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        onClick={() => handlePageChange(page + 1)}
+                        sx={{ mx: 2 }}
+                    >
+                        Next
+                    </Button>
+                </Box>
+
             </Box>
         </ThemeProvider>
     );
