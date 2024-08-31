@@ -1,19 +1,18 @@
 "use client";
 import {
-    Button,
     Box,
     Typography,
     Tooltip,
     ThemeProvider,
     useTheme,
     Toolbar,
-    Stack,
     Paper,
     TextField,
-    IconButton, // Import IconButton component
+    IconButton,
+    Select,
+    MenuItem, // Import Select and MenuItem components
 } from "@mui/material";
-import FullscreenIcon from "@mui/icons-material/Fullscreen"; // Correctly import the FullscreenIcon
-import Image from "next/image";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { useRouter } from "next/navigation";
 import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
@@ -27,11 +26,23 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [country, setCountry] = useState("united states");
+    const [sortBy, setSortBy] = useState("popularity");
+    const [category, setCategory] = useState(""); // New state for category
 
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const response = await fetch("/api/products");
+                const query = new URLSearchParams({
+                    tagtype_0: "countries",
+                    tag_contains_0: "contains",
+                    tag_0: country,
+                    sort_by: sortBy,
+                    page_size: "50",
+                    category: category // Include category in the query
+                }).toString();
+
+                const response = await fetch(`/api/products?${query}`);
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
@@ -45,19 +56,18 @@ export default function Home() {
         }
 
         fetchProducts();
-    }, []);
+    }, [country, sortBy, category]); // Add category as a dependency
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };
 
     const handleSearchClick = () => {
-        router.push("/scanner")
-       
+        router.push("/scanner");
     };
 
     const filteredProducts = products.filter((product) =>
-        product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.product_name && product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (loading) {
@@ -80,7 +90,7 @@ export default function Home() {
                     textAlign: "center",
                 }}
             >
-                {/* Search Bar with Icon Button */}
+                {/* Search Bar with Custom Query Inputs */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -98,19 +108,98 @@ export default function Home() {
                         onChange={handleSearch}
                         sx={{ width: "100%", maxWidth: 400 }}
                     />
-                  <Tooltip title="Use Scanner" placement="right" arrow >
-                    <IconButton
-                        color="primary"
-                        onClick={handleSearchClick}
-                        sx={{ ml: 1 }} // Add some margin to the left of the button
+
+                    <Tooltip title="Use Scanner" placement="right" arrow >
+                        <IconButton
+                            color="primary"
+                            onClick={handleSearchClick}
+                            sx={{ ml: 1 }}
+                        >
+                            <FullscreenIcon sx={{ fontSize: 100 }} />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+
+                {/* Dropdown Menus for Queries */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: theme.spacing(2),
+                        mb: 3,
+                    }}
+                >
+                    {/* Country Dropdown */}
+                    <Select
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        displayEmpty
+                        variant="outlined"
+                        sx={{ minWidth: 200 }}
                     >
-                        <FullscreenIcon sx={{ fontSize: 100 }} />
-                    </IconButton>
-                  </Tooltip>
+                        <MenuItem value="united states">United States</MenuItem>
+                        <MenuItem value="united kingdom">United Kingdom</MenuItem>
+                        <MenuItem value="bangladesh">Bangladesh</MenuItem>
+                        <MenuItem value="brazil">Brazil</MenuItem>
+                        <MenuItem value="canada">Canada</MenuItem>
+                        <MenuItem value="china">China</MenuItem>
+                        <MenuItem value="france">France</MenuItem>
+                        <MenuItem value="germany">Germany</MenuItem>
+                        <MenuItem value="india">India</MenuItem>
+                        <MenuItem value="italy">Italy</MenuItem>
+                        <MenuItem value="mexico">Mexico</MenuItem>
+                        <MenuItem value="morocco">Morocco</MenuItem>
+                        <MenuItem value="pakistan">Pakistan</MenuItem>
+                        <MenuItem value="russia">Russia</MenuItem>
+                        <MenuItem value="saudi arabia">Saudi Arabia</MenuItem>
+                        <MenuItem value="south africa">South Africa</MenuItem>
+                        <MenuItem value="spain">Spain</MenuItem>
+                        <MenuItem value="turkey">Turkey</MenuItem>
+                        
+                        {/* Add more countries as needed */}
+                    </Select>
+
+                    {/* Sort By Dropdown */}
+                    <Select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        displayEmpty
+                        variant="outlined"
+                        sx={{ minWidth: 200 }}
+                    >
+                        <MenuItem value="popularity">Popularity</MenuItem>
+                        <MenuItem value="nutriscore_score">Nutri Score</MenuItem>
+                        <MenuItem value="ecoscore_score">Eco Score</MenuItem>
+                    </Select>
+
+                    {/* Category Dropdown */}
+                    <Select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        displayEmpty
+                        variant="outlined"
+                        sx={{ minWidth: 200 }}
+                    >
+                        <MenuItem value="">All Categories</MenuItem>
+                        <MenuItem value="breads">Breads</MenuItem>
+                        <MenuItem value="canned foods">Canned Foods</MenuItem>
+                        <MenuItem value="cereals">Cereals</MenuItem>
+                        <MenuItem value="cheeses">Cheeses</MenuItem>
+                        <MenuItem value="chips">Chips</MenuItem>
+                        <MenuItem value="chocolates">Chocolates</MenuItem>
+                        <MenuItem value="dairy">Dairy</MenuItem>
+                        <MenuItem value="frozen foods">Frozen Foods</MenuItem>
+                        <MenuItem value="juice">Juice</MenuItem>
+                        <MenuItem value="meats">Meats</MenuItem>
+                        <MenuItem value="pastas">Pastas</MenuItem>
+                        <MenuItem value="plant-based foods">Plant Based Foods</MenuItem>
+                        <MenuItem value="seafoods">Seafoods</MenuItem>
+                        <MenuItem value="snacks">Snacks</MenuItem>
+                    </Select>
                 </Box>
 
                 <Typography variant="h4" gutterBottom>
-                    Products by Nova Score
+                    Products
                 </Typography>
 
                 <Box
