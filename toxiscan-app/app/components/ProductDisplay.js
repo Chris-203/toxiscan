@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -15,15 +15,24 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
+  ThemeProvider,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { NoFood as NoFoodIcon } from "@mui/icons-material";
+import CustomTheme from '../components/Theme';
 
 const ProductDisplay = ({ productData }) => {
+  const [imageError, setImageError] = useState(false);
   if (!productData) return null;
 
   const nutritionalRef = useRef(null);
   const healthRef = useRef(null);
   const productRef = useRef(null);
+  const environmentalRef = useRef(null);
+
+  const handleError = () => {
+    setImageError(true);
+  };
 
   const scrollToSection = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth" });
@@ -120,7 +129,7 @@ const ProductDisplay = ({ productData }) => {
       description: "Poor nutritional quality",
     },
     e: {
-      description: "Very poor nutritional quality",
+      description: "Bad nutritional quality",
     },
   };
 
@@ -148,12 +157,46 @@ const ProductDisplay = ({ productData }) => {
     "en:vegetarian": "No non-vegetarian ingredients detected",
     // Add more mappings as needed
   };
+  const getNutrientLevelColor = (level) => {
+    switch (level) {
+      case "low":
+        return "green";
+      case "moderate":
+        return "orange";
+      case "high":
+        return "red";
+      default:
+        return "black"; // default color if the level is unknown
+    }
+  };
+  const AllergensList = ({ allergens }) => {
+    // Function to remove 'en:' prefix from allergen names
+    const cleanAllergen = (allergen) => allergen.replace('en:', '');
+  
+    return (
+      <Typography variant="body1" mb={3}>
+        <strong>Allergens</strong>:{" "}
+        {allergens.map((allergen, index) => (
+          <span key={index}>
+            {cleanAllergen(allergen)}
+            {index < allergens.length - 1 ? ', ' : ''}
+          </span>
+        ))}
+      </Typography>
+    );
+  };
 
   return (
+    <ThemeProvider theme={CustomTheme}>
     <Box
       ref={productRef}
       display={"flex"}
-      sx={{ bgcolor: "purple", width: "100%", height: "100%" }}
+      sx={{ backgroundImage: "url('/images/gradient2.png')",
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        minHeight: '100vh', // Changed from height to minHeight
+        width: '100%', }}
       textAlign={"center"}
       justifyContent={"center"}
     >
@@ -164,7 +207,7 @@ const ProductDisplay = ({ productData }) => {
           justifyContent: "center",
           mb: 4,
           position: "fixed",
-          bgcolor: "darkgreen",
+          bgcolor: "primary.main",
           width: "100%",
           zIndex: 100,
         }}
@@ -181,7 +224,7 @@ const ProductDisplay = ({ productData }) => {
           onClick={() => scrollToSection(nutritionalRef)}
           sx={{ mx: 1, borderRadius: 10, mt: 2, mb: 2, bgcolor: "#000000" }}
         >
-          Nutritional Information
+          Nutritional Facts
         </Button>
         <Button
           variant="contained"
@@ -189,6 +232,13 @@ const ProductDisplay = ({ productData }) => {
           sx={{ mx: 1, borderRadius: 10, mt: 2, mb: 2, bgcolor: "#000000" }}
         >
           Health
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => scrollToSection(environmentalRef)}
+          sx={{ mx: 1, borderRadius: 10, mt: 2, mb: 2, bgcolor: "#000000" }}
+        >
+          Environment
         </Button>
       </Box>
       <Container
@@ -211,16 +261,32 @@ const ProductDisplay = ({ productData }) => {
             alignItems: "center",
             width: "100%",
             justifyContent: "center",
-            bgcolor: "cyan",
+            bgcolor: "white",
             borderRadius: "50px",
           }}
         >
-          <Box sx={{ marginTop: "10px", ml: 5 }}>
-            <img
-              src={productData.image_url}
-              alt="Product Image"
-              style={{ borderRadius: "8px" }} // Add this line to apply rounded corners
-            />
+          <Box
+            sx={{
+              // width: 150,
+              // height: 150,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              // border: "1px solid #ddd",
+              borderRadius: 1,
+              overflow: "hidden",
+            }}
+          >
+            {imageError ? (
+              <NoFoodIcon sx={{ fontSize: 80, color: "gray" }} />
+            ) : (
+              <img
+                src={productData.image_url}
+                alt="Product"
+                onError={handleError}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            )}
           </Box>
 
           <Box
@@ -229,7 +295,7 @@ const ProductDisplay = ({ productData }) => {
             textAlign="left"
           >
             <Typography variant="h3" mb={5}>
-              {productData.product_name}
+              {productData.product_name_en}
             </Typography>
             <Typography variant="body1" mb={3}>
               <strong>Barcode</strong>: {productData.code}
@@ -255,10 +321,7 @@ const ProductDisplay = ({ productData }) => {
             <Typography variant="body1" mb={3}>
               <strong>Ingredients</strong>: {productData.ingredients_text_en}
             </Typography>
-            <Typography variant="body1" mb={3}>
-              <strong>Allergens</strong>:{" "}
-              {productData.allergens.replace("en:", "")}
-            </Typography>
+            <AllergensList allergens={productData.allergens_tags} />
           </Box>
         </Box>
         <Box
@@ -269,7 +332,7 @@ const ProductDisplay = ({ productData }) => {
             alignItems: "center",
             width: "100%",
             justifyContent: "center",
-            bgcolor: "cyan",
+            bgcolor: "white",
             borderRadius: "40px",
             mt: 5,
             px: 2,
@@ -285,7 +348,7 @@ const ProductDisplay = ({ productData }) => {
           >
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h6">Nutritional Information</Typography>
+                <Typography variant="h6"><strong>Nutritional Information</strong></Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <TableContainer component={Paper} sx={{ width: "100%" }}>
@@ -341,7 +404,7 @@ const ProductDisplay = ({ productData }) => {
             alignItems: "center",
             width: "100%",
             justifyContent: "center",
-            bgcolor: "cyan",
+            bgcolor: "white",
             borderRadius: "40px",
             mt: 5,
             px: 2,
@@ -357,14 +420,14 @@ const ProductDisplay = ({ productData }) => {
               textAlign: "left",
             }}
           >
-            <Accordion sx={{ bgcolor: "teal" }}>
+            <Accordion sx={{ bgcolor: "white" }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="h5">
                   <strong>Health</strong>
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography variant="h6" mb={3}>
+                <Typography variant="h6">
                   <strong>Nutrition</strong>
                 </Typography>
                 <Box
@@ -393,8 +456,188 @@ const ProductDisplay = ({ productData }) => {
                     </Typography>
                   </Box>
                 </Box>
-                <Typography variant="body1" mb={3}>
-                  Food processing
+
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box display="flex" flexDirection="row" alignItems="center">
+                      <Typography variant="body1">Nutrient levels</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography
+                          variant="body1"
+                          color={getNutrientLevelColor(
+                            productData.nutrient_levels.fat
+                          )}
+                        >
+                          Fat in {productData.nutrient_levels.fat} quantity (
+                          {productData.nutriments["fat"]} %)
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Typography variant="body2">
+                          <strong>What you need to know</strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - A high consumption of fat, especially saturated
+                            fats, can raise cholesterol, which increases the
+                            risk of heart diseases.
+                          </Typography>
+                          <strong>
+                            Recommendation: Limit the consumption of fat and
+                            saturated fat
+                          </strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - Choose products with lower fat and saturated fat
+                            content.{" "}
+                          </Typography>
+                          <Typography sx={{ mt: 1, fontStyle: "italic" }}>
+                            Source: National Health Service UK (NHS) - Fat: the
+                            facts
+                          </Typography>
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography
+                          variant="body1"
+                          color={getNutrientLevelColor(
+                            productData.nutrient_levels["saturated-fat"]
+                          )}
+                        >
+                          Saturated fat in{" "}
+                          {productData.nutrient_levels["saturated-fat"]}{" "}
+                          quantity ({productData.nutriments["saturated-fat"]} %)
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Typography variant="body2">
+                          <strong>What you need to know</strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - A high consumption of saturated fats can raise
+                            cholesterol, which increases the risk of heart
+                            diseases.
+                          </Typography>
+                          <strong>
+                            Recommendation: Limit the consumption of saturated
+                            fat
+                          </strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - Choose products with lower saturated fat content.
+                          </Typography>
+                          <Typography sx={{ mt: 1, fontStyle: "italic" }}>
+                            Source: National Health Service UK (NHS) - Fat: the
+                            facts
+                          </Typography>
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Box
+                          display="flex"
+                          flexDirection="row"
+                          alignItems="center"
+                        >
+                          <Typography
+                            variant="body1"
+                            color={getNutrientLevelColor(
+                              productData.nutrient_levels.sugars
+                            )}
+                          >
+                            Sugars in {productData.nutrient_levels.sugars}{" "}
+                            quantity ({productData.nutriments["sugars"]} %)
+                          </Typography>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Typography variant="body2">
+                          <strong>What you need to know</strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - High sugar consumption can lead to weight gain and
+                            obesity, which increases the risk of type 2 diabetes
+                            and cardio-vascular diseases.
+                          </Typography>
+                          <strong>
+                            Recommendation: Limit the consumption of sugar and
+                            sugary drinks
+                          </strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - Sugary drinks (such as sodas, fruit beverages, and
+                            fruit juices and nectars) should be limited as much
+                            as possible (no more than 1 glass a day).
+                            <Typography sx={{ mt: 1, ml: 1 }}>
+                              - Choose products with lower sugar content and
+                              reduce the consumption of products with added
+                              sugars.
+                            </Typography>
+                          </Typography>
+                          <Typography sx={{ mt: 1, fontStyle: "italic" }}>
+                            Source: National Health Service UK (NHS) - Sugar:
+                            the facts
+                          </Typography>
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography
+                          variant="body1"
+                          color={getNutrientLevelColor(
+                            productData.nutrient_levels.salt
+                          )}
+                        >
+                          Salt in {productData.nutrient_levels.salt} quantity (
+                          {productData.nutriments["salt"]} %)
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Typography variant="body2">
+                          <strong>What you need to know</strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            <Typography sx={{ mt: 1, ml: 1 }}>
+                              - A high consumption of salt (or sodium) can cause
+                              raised blood pressure, which can increase the risk
+                              of heart disease and stroke.
+                            </Typography>
+                            <Typography sx={{ mt: 1, ml: 1 }}>
+                              - Many people who have high blood pressure do not
+                              know it, as there are often no symptoms.
+                            </Typography>
+                            <Typography sx={{ mt: 1, ml: 1 }}>
+                              - Most people consume too much salt (on average 9
+                              to 12 grams per day), around twice the recommended
+                              maximum level of intake.
+                            </Typography>
+                          </Typography>
+                          <strong>
+                            Recommendation: Limit the consumption of salt
+                          </strong>
+                          <Typography sx={{ mt: 1, ml: 1 }}>
+                            - Choose products with lower salt content and reduce
+                            the consumption of products with added salt.
+                          </Typography>
+                          <Typography sx={{ mt: 1, fontStyle: "italic" }}>
+                            Source: World Health Organization (WHO) - Fact sheet
+                            - Salt reduction
+                          </Typography>
+                          <Typography sx={{ mt: 1, fontStyle: "italic" }}>
+                            Source: National Health Service UK (NHS) - Salt: the
+                            facts
+                          </Typography>
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+                  </AccordionDetails>
+                </Accordion>
+
+                <Typography variant="h6" mb={3} mt={3}>
+                  <strong>Food processing</strong>
                 </Typography>
                 <Accordion>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -499,13 +742,14 @@ const ProductDisplay = ({ productData }) => {
             alignItems: "center",
             width: "100%",
             justifyContent: "center",
-            bgcolor: "cyan",
+            bgcolor: "white",
             borderRadius: "40px",
             mt: 5,
             px: 2,
           }}
         >
           <Box
+            ref={environmentalRef}
             sx={{
               width: "100%",
               padding: 2,
@@ -515,16 +759,13 @@ const ProductDisplay = ({ productData }) => {
               textAlign: "left",
             }}
           >
-            <Accordion sx={{ bgcolor: "teal" }}>
+            <Accordion sx={{ bgcolor: "white" }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="h5">
                   <strong>Environment</strong>
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography variant="h6" mb={3}>
-                  <strong>Nutrition</strong>
-                </Typography>
                 <Box
                   display="flex"
                   flexDirection="row"
@@ -544,25 +785,21 @@ const ProductDisplay = ({ productData }) => {
                         color: getNutriScoreColor(productData.ecoscore_grade),
                       }}
                     >
-                      Eco-Score {productData.ecoscore_grade.toUpperCase()} (Score:{productData.ecoscore_score}/100)
+                      Eco-Score {productData.ecoscore_grade.toUpperCase()}{" "}
+                      (Score:{productData.ecoscore_score}/100)
                     </Typography>
                     <Typography variant="body1" mb={3}>
                       {ecoscoreInfo[productData.ecoscore_grade].description}
                     </Typography>
                   </Box>
                 </Box>
-                <Typography variant="body1" mb={3}>
-                  Food processing
-                </Typography>
-                <Typography variant="body1" mb={3}>
-                  {productData.nova_groups_tags[0].replace("en:", "")}
-                </Typography>
               </AccordionDetails>
             </Accordion>
           </Box>
         </Box>
       </Container>
     </Box>
+    </ThemeProvider>
   );
 };
 
