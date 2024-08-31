@@ -319,7 +319,7 @@ const ProductDisplay = ({ productData }) => {
                 "Missing packaging information for this product"}
             </Typography>
             <Typography variant="body1" mb={3}>
-              <strong>Ingredients</strong>: {productData.ingredients_text_en}
+              <strong>Ingredients</strong>: {productData.ingredients_text_en.replace(/_/g, " ")}
             </Typography>
             <AllergensList allergens={productData.allergens_tags} />
           </Box>
