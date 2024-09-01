@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
 import { useEffect, useState } from "react";
-import { NoFood as NoFoodIcon } from "@mui/icons-material";
+import { BorderColor, NoFood as NoFoodIcon } from "@mui/icons-material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
@@ -274,7 +274,8 @@ export default function Home() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <Paper elevation={3} sx={{ padding: 2, textAlign: "center", width: '100%', bgcolor: '#c6ebc3'}}>
+                                <Paper elevation={5} sx={{ padding: 2, textAlign: "center", width: '100%', borderRadius: 10 ,  
+                                    '&:hover': { border: '5px solid' , borderColor:(theme) => theme.palette.primary.main },}}>
                                     {product.image_url ? (
                                         <img
                                             src={product.image_url}
