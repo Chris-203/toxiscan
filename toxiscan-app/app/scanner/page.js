@@ -262,7 +262,7 @@ const BarcodeScanner = () => {
         color="primary"
         onClick={handleStartScan}
         disabled={cameraActive}
-        sx={{ marginTop: "10px" }}
+        sx={{ marginTop: "10px", mb:3 }}
       >
         Start Scanning
       </Button>
