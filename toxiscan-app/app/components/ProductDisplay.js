@@ -21,16 +21,19 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { NoFood as NoFoodIcon } from "@mui/icons-material";
 import CustomTheme from "../components/Theme";
 import { Link } from "@mui/material";
+import Image from "next/image";
 
 const ProductDisplay = ({ productData }) => {
   const [imageError, setImageError] = useState(false);
-  if (!productData) return null;
+  const [additives, setAdditives] = useState([]);
+  const [additivesData, setAdditivesData] = useState(null);
+  
 
   const nutritionalRef = useRef(null);
   const healthRef = useRef(null);
   const productRef = useRef(null);
   const environmentalRef = useRef(null);
-
+  // if (!productData) return null;
   const handleError = () => {
     setImageError(true);
   };
@@ -58,7 +61,7 @@ const ProductDisplay = ({ productData }) => {
     const nutriScoreUrl = `https://static.openfoodfacts.org/images/misc/nutriscore-${nutriScoreGrade.toLowerCase()}.svg`;
 
     return (
-      <img
+      <Image
         src={nutriScoreUrl}
         alt={`Nutri-Score ${nutriScoreGrade.toUpperCase()}`}
         style={{ width: "100px", height: "auto" }} // Adjust the size as needed
@@ -70,7 +73,7 @@ const ProductDisplay = ({ productData }) => {
     const novaGroupUrl = `https://static.openfoodfacts.org/images/misc/nova-group-${novaGroup}.svg`;
 
     return (
-      <img
+      <Image
         src={novaGroupUrl}
         alt={`NOVA Group ${novaGroup}`}
         style={{ width: "20px", height: "auto" }} // Adjust the size as needed
@@ -82,7 +85,7 @@ const ProductDisplay = ({ productData }) => {
     const ecoScoreUrl = `https://static.openfoodfacts.org/images/misc/ecoscore/ecoscore-${ecoScoreGrade.toLowerCase()}.svg`;
 
     return (
-      <img
+      <Image
         src={ecoScoreUrl}
         alt={`Eco-Score ${ecoScoreGrade.toUpperCase()}`}
         style={{ width: "40px", height: "auto" }} // Adjust the size as needed
@@ -198,8 +201,7 @@ const ProductDisplay = ({ productData }) => {
     );
   };
 
-  const [additives, setAdditives] = useState([]);
-  const [additivesData, setAdditivesData] = useState(null);
+  
 
   useEffect(() => {
     const fetchAdditives = async () => {
@@ -339,7 +341,7 @@ const ProductDisplay = ({ productData }) => {
               {!productData.image_url ? (
                 <NoFoodIcon sx={{ fontSize: "1800%", color: "gray" }} />
               ) : (
-                <img
+                <Image
                   src={productData.image_url}
                   alt="Product"
                   onError={handleError}
