@@ -12,6 +12,7 @@ import {
     Select,
     MenuItem, 
     Button, // Import Button for pagination
+    GlobalStyles,
 } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { useRouter } from "next/navigation";
@@ -117,12 +118,21 @@ export default function Home() {
 
     return (
         <ThemeProvider theme={CustomTheme}>
+              {/* Global Styles to set the background color of the whole screen */}
+              <GlobalStyles
+                styles={{
+                    body: {
+                        backgroundColor: '#9fdf9c', // Set your desired background color here
+                        margin: 0, // Remove default margin to ensure background color covers the whole screen
+                        padding: 0, // Remove default padding
+                    },
+                }}
+            />
             <CustomAppBar />
             <Toolbar />
 
             <Box
                 sx={{
-                    backgroundColor: "common.white",
                     padding: theme.spacing(2),
                     textAlign: "center",
                 }}
@@ -143,7 +153,7 @@ export default function Home() {
                         placeholder="Search Products"
                         value={searchTerm}
                         onChange={handleSearch}
-                        sx={{ width: "100%", maxWidth: 400 }}
+                        sx={{ width: "100%", maxWidth: 400, bgcolor: '#c6ebc3' }}
                     />
 
                     <Tooltip title="Use Scanner" placement="right" arrow >
@@ -172,7 +182,7 @@ export default function Home() {
                         onChange={(e) => setCountry(e.target.value)}
                         displayEmpty
                         variant="outlined"
-                        sx={{ minWidth: 200 }}
+                        sx={{ minWidth: 200 , bgcolor: '#c6ebc3'}}
                     >
                         <MenuItem value="">Countries</MenuItem>
                         <MenuItem value="united states">United States</MenuItem>
@@ -203,7 +213,7 @@ export default function Home() {
                         onChange={(e) => setSortBy(e.target.value)}
                         displayEmpty
                         variant="outlined"
-                        sx={{ minWidth: 200 }}
+                        sx={{ minWidth: 200 , bgcolor: '#c6ebc3'}}
                     >
                         <MenuItem value="">Sort By</MenuItem>
                         <MenuItem value="popularity">Popularity</MenuItem>
@@ -217,7 +227,7 @@ export default function Home() {
                         onChange={(e) => setCategory(e.target.value)}
                         displayEmpty
                         variant="outlined"
-                        sx={{ minWidth: 200 }}
+                        sx={{ minWidth: 200, bgcolor: '#c6ebc3' }}
                     >
                         <MenuItem value="">All Categories</MenuItem>
                         <MenuItem value="breads">Breads</MenuItem>
@@ -264,7 +274,7 @@ export default function Home() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <Paper elevation={3} sx={{ padding: 2, textAlign: "center", width: '100%' }}>
+                                <Paper elevation={3} sx={{ padding: 2, textAlign: "center", width: '100%', bgcolor: '#c6ebc3'}}>
                                     {product.image_url ? (
                                         <img
                                             src={product.image_url}
