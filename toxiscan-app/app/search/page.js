@@ -10,7 +10,7 @@ import {
     TextField,
     IconButton,
     Select,
-    MenuItem, 
+    MenuItem,
     Button, // Import Button for pagination
     GlobalStyles,
 } from "@mui/material";
@@ -61,7 +61,7 @@ export default function Home() {
                     sort_by: sortBy,
                     page_size: "50",
                     page: page.toString(), // Add page to the query
-                    category: category 
+                    category: category
                 }).toString();
 
                 const response = await fetch(`/api/products?${query}`);
@@ -118,8 +118,8 @@ export default function Home() {
 
     return (
         <ThemeProvider theme={CustomTheme}>
-              {/* Global Styles to set the background color of the whole screen */}
-              <GlobalStyles
+            {/* Global Styles to set the background color of the whole screen */}
+            <GlobalStyles
                 styles={{
                     body: {
                         backgroundColor: '#9fdf9c', // Set your desired background color here
@@ -141,11 +141,14 @@ export default function Home() {
                 <Box
                     sx={{
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        justifyContent: 'center',
                         mb: 3,
                         marginTop: 5,
-                        marginLeft: 10,
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        width: '100%',
+                        maxWidth: 600, // Adjust maxWidth as needed
                     }}
                 >
                     <TextField
@@ -153,19 +156,23 @@ export default function Home() {
                         placeholder="Search Products"
                         value={searchTerm}
                         onChange={handleSearch}
-                        sx={{ width: "100%", maxWidth: 400, bgcolor: '#c6ebc3' }}
+                        sx={{
+                            width: '100%',
+                            maxWidth: 600, // Adjust maxWidth as needed
+                            bgcolor: '#c6ebc3',
+                        }}
                     />
-
-                    <Tooltip title="Use Scanner" placement="right" arrow >
+                    <Tooltip title="Use Scanner" placement="right" arrow>
                         <IconButton
                             color="primary"
                             onClick={handleScanClick}
-                            sx={{ ml: 1 }}
+                            sx={{ mt: 2 }} // Margin top to create space between search bar and button
                         >
                             <FullscreenIcon sx={{ fontSize: 100 }} />
                         </IconButton>
                     </Tooltip>
                 </Box>
+
 
                 {/* Dropdown Menus for Queries */}
                 <Box
@@ -174,6 +181,7 @@ export default function Home() {
                         justifyContent: 'center',
                         gap: theme.spacing(2),
                         mb: 3,
+                        flexWrap: 'wrap', // Allows dropdowns to wrap to the next line on smaller screens
                     }}
                 >
                     {/* Country Dropdown */}
@@ -182,7 +190,7 @@ export default function Home() {
                         onChange={(e) => setCountry(e.target.value)}
                         displayEmpty
                         variant="outlined"
-                        sx={{ minWidth: 200 , bgcolor: '#c6ebc3'}}
+                        sx={{ minWidth: 200, maxWidth: 250, bgcolor: '#c6ebc3' }}
                     >
                         <MenuItem value="">Countries</MenuItem>
                         <MenuItem value="united states">United States</MenuItem>
@@ -203,7 +211,7 @@ export default function Home() {
                         <MenuItem value="south africa">South Africa</MenuItem>
                         <MenuItem value="spain">Spain</MenuItem>
                         <MenuItem value="turkey">Turkey</MenuItem>
-                        
+
                         {/* Add more countries as needed */}
                     </Select>
 
@@ -213,7 +221,7 @@ export default function Home() {
                         onChange={(e) => setSortBy(e.target.value)}
                         displayEmpty
                         variant="outlined"
-                        sx={{ minWidth: 200 , bgcolor: '#c6ebc3'}}
+                        sx={{ minWidth: 200, maxWidth: 250, bgcolor: '#c6ebc3' }}
                     >
                         <MenuItem value="">Sort By</MenuItem>
                         <MenuItem value="popularity">Popularity</MenuItem>
@@ -227,7 +235,7 @@ export default function Home() {
                         onChange={(e) => setCategory(e.target.value)}
                         displayEmpty
                         variant="outlined"
-                        sx={{ minWidth: 200, bgcolor: '#c6ebc3' }}
+                        sx={{ minWidth: 200, maxWidth: 250, bgcolor: '#c6ebc3' }}
                     >
                         <MenuItem value="">All Categories</MenuItem>
                         <MenuItem value="breads">Breads</MenuItem>
@@ -274,8 +282,10 @@ export default function Home() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <Paper elevation={5} sx={{ padding: 2, textAlign: "center", width: '100%', borderRadius: 10 ,  
-                                    '&:hover': { border: '5px solid' , borderColor:(theme) => theme.palette.primary.main },}}>
+                                <Paper elevation={5} sx={{
+                                    padding: 2, textAlign: "center", width: '100%', borderRadius: 10,
+                                    '&:hover': { border: '5px solid', borderColor: (theme) => theme.palette.primary.main },
+                                }}>
                                     {product.image_url ? (
                                         <img
                                             src={product.image_url}
@@ -297,7 +307,7 @@ export default function Home() {
                         <Typography>No products found.</Typography>
                     )}
                 </Box>
-                
+
                 {/* Pagination Controls*/}
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                     <Button
@@ -328,18 +338,18 @@ export default function Home() {
                 </Box>
 
                 {/* Scroll to Bottom Button */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-                <IconButton
-                    color="primary"
-                    onClick={scrollToBottom}
-                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
-                >
-                    <ArrowDownwardIcon sx={{ fontSize: 40 }} />
-                </IconButton>
-            </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                    <IconButton
+                        color="primary"
+                        onClick={scrollToBottom}
+                        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                    >
+                        <ArrowDownwardIcon sx={{ fontSize: 40 }} />
+                    </IconButton>
+                </Box>
 
-             {/* Scroll to Top Button */}
-             {showScrollUp && (
+                {/* Scroll to Top Button */}
+                {showScrollUp && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                         <IconButton
                             color="primary"
