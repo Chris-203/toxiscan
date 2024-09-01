@@ -1,10 +1,8 @@
-// src/app/api/products/route.js
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const baseUrl =
-    "https://world.openfoodfacts.org/cgi/search.pl?action=process";
+  const baseUrl = "https://world.openfoodfacts.org/cgi/search.pl?action=process";
 
   const tagType = searchParams.get("tagtype_0") || "countries";
   const tagContains = searchParams.get("tag_contains_0") || "contains";
@@ -33,12 +31,22 @@ export async function GET(req) {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch");
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
 
     const data = await response.json();
+
+    // Check if the data structure is as expected
+    if (!data.products || !Array.isArray(data.products)) {
+      throw new Error("Invalid data format received from API");
+    }
+
     return NextResponse.json(data.products);
   } catch (error) {
-    return NextResponse.error(new Error("Failed to fetch data"));
+    console.error("API Error:", error.message);
+    return NextResponse.json(
+      { error: error.message }, 
+      { status: 500 } // Ensure a valid HTTP status code is returned
+    );
   }
 }
