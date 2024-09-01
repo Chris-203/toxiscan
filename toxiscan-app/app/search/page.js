@@ -28,6 +28,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import SearchIcon from "@mui/icons-material/Search";
 import debounce from "lodash/debounce";
 import ProductDisplay from "../components/ProductDisplay";
+import { useAuth } from "@clerk/nextjs";
 
 export default function Home() {
   const theme = useTheme();
@@ -43,6 +44,7 @@ export default function Home() {
   const [showScrollUp, setShowScrollUp] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const { isSignedIn } = useAuth(); // Check if user is signed in
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -103,7 +105,11 @@ export default function Home() {
   };
 
   const handleScanClick = () => {
-    router.push("/scanner");
+    if (isSignedIn) {
+      router.push("/scanner");
+    } else {
+      router.push("/sign-in"); // Redirect to sign-in page if not signed in
+    }
   };
   const scrollToBottom = () => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -186,7 +192,7 @@ export default function Home() {
           <Tooltip title="Use Scanner" placement="right" arrow>
             <IconButton
               color="primary"
-              onClick={handleScanClick}
+              onClick={handleScanClick} // Use onClick to handle scanning
               sx={{ mt: 2 }} // Margin top to create space between search bar and button
             >
               <FullscreenIcon sx={{ fontSize: 100 }} />

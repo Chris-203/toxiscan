@@ -11,10 +11,22 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CustomTheme from "./components/Theme";
 import CustomAppBar from "./components/CustomAppBar";
+import { useAuth } from "@clerk/nextjs";
 
 export default function Home() {
   const theme = useTheme(); // Access theme using useTheme hook
   const router = useRouter();
+  const { isSignedIn } = useAuth(); // Check if user is signed in
+
+  const handleScanClick = () => {
+    if (isSignedIn) {
+      router.push("/scanner");
+    } else {
+      router.push("/sign-in"); // Redirect to sign-in page if not signed in
+    }
+  };
+
+
   return (
     <ThemeProvider theme={CustomTheme}>
       <CustomAppBar />
@@ -47,7 +59,7 @@ export default function Home() {
           variant="contained"
           color="primary"
           sx={{ mt: 10, mr: 2, borderRadius: 10 }}
-          href="/scanner"
+          onClick={handleScanClick} // Use onClick to handle scanning
           size="large"
           style={{
             fontSize: "25px",
