@@ -397,7 +397,7 @@ export default function Home() {
         <Fade in={openModal}>
           <Box
             sx={{
-              backgroundImage: "url('/images/gradient2.png')",
+              backgroundColor: "#9fdf9c",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center center",
@@ -408,7 +408,6 @@ export default function Home() {
               top: "50%",
               left: "50%",
               overflowY: "auto",
-              bgcolor: "background.paper",
               border: "2px solid #000",
               boxShadow: 24,
               p: 4,

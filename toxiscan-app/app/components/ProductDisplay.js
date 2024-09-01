@@ -16,6 +16,7 @@ import {
   AccordionDetails,
   Button,
   ThemeProvider,
+  GlobalStyles,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { NoFood as NoFoodIcon } from "@mui/icons-material";
@@ -243,14 +244,20 @@ const ProductDisplay = ({ productData }) => {
 
   return (
     <ThemeProvider theme={CustomTheme}>
+      {/* Global Styles to set the background color of the whole screen */}
+      <GlobalStyles
+        styles={{
+          body: {
+            backgroundColor: "#9fdf9c",
+            margin: 0,
+            padding: 0,
+          },
+        }}
+      />
       <Box
         ref={productRef}
         display={"flex"}
         sx={{
-          backgroundImage: "url('/images/gradient2.png')",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center center",
           minHeight: "100vh",
           width: "100%",
           position: "relative", // Ensure it's positioned relative to the parent
