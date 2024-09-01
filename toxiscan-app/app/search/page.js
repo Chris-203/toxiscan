@@ -13,15 +13,21 @@ import {
     MenuItem, 
     Button, // Import Button for pagination
     GlobalStyles,
+    Modal,
+    Backdrop,
+    Fade,
 } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { useRouter } from "next/navigation";
 import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { BorderColor, NoFood as NoFoodIcon } from "@mui/icons-material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import SearchIcon from "@mui/icons-material/Search";
+import debounce from 'lodash/debounce';
+import ProductDisplay from "../components/ProductDisplay";
 
 
 export default function Home() {
@@ -33,26 +39,15 @@ export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
     const [country, setCountry] = useState("");
     const [sortBy, setSortBy] = useState("");
-    const [category, setCategory] = useState(""); // New state for category
-    const [page, setPage] = useState(1); // Add state for current page
+    const [category, setCategory] = useState("");
+    const [page, setPage] = useState(1);
     const [showScrollUp, setShowScrollUp] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [openModal, setOpenModal] = useState(false); 
 
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-        // Scroll back to the top of the page
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const scrollToBottom = () => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    };
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    useEffect(() => {
-        async function fetchProducts() {
+    // Define the debounced API fetch function
+    const fetchProductsDebounced = useCallback(
+        debounce(async (search) => {
             try {
                 const query = new URLSearchParams({
                     tagtype_0: "countries",
@@ -60,8 +55,9 @@ export default function Home() {
                     tag_0: country,
                     sort_by: sortBy,
                     page_size: "50",
-                    page: page.toString(), // Add page to the query
-                    category: category 
+                    page: page.toString(),
+                    category: category,
+                    search: search
                 }).toString();
 
                 const response = await fetch(`/api/products?${query}`);
@@ -75,14 +71,17 @@ export default function Home() {
                 setError(error.message);
                 setLoading(false);
             }
-        }
+        }, 600), // 500ms delay after the user stops typing
+        [country, sortBy, category, page]
+    );
 
-        fetchProducts();
-    }, [country, sortBy, category, page]); // Add page as a dependency
+    useEffect(() => {
+        fetchProductsDebounced(searchTerm);
+    }, [searchTerm, fetchProductsDebounced]);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 300) { // Adjust this value as needed
+            if (window.scrollY > 300) {
                 setShowScrollUp(true);
             } else {
                 setShowScrollUp(false);
@@ -97,34 +96,43 @@ export default function Home() {
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
+        setPage(1); // Reset to the first page on new search
     };
 
     const handleScanClick = () => {
         router.push("/scanner");
     };
+    const scrollToBottom = () => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    };
 
-    const filteredProducts = products.filter((product) =>
-        product.product_name && product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setOpenModal(true); // Open the modal
+    };
 
-    if (loading) {
-        return <Typography>Loading...</Typography>;
-    }
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setSelectedProduct(null); // Clear the selected product
+    };
+
+    const filteredProducts = products;
 
     if (error) {
         return <Typography>Error: {error}</Typography>;
     }
 
-
     return (
         <ThemeProvider theme={CustomTheme}>
-              {/* Global Styles to set the background color of the whole screen */}
-              <GlobalStyles
+            <GlobalStyles
                 styles={{
                     body: {
-                        backgroundColor: '#9fdf9c', // Set your desired background color here
-                        margin: 0, // Remove default margin to ensure background color covers the whole screen
-                        padding: 0, // Remove default padding
+                        backgroundColor: '#9fdf9c',
+                        margin: 0,
+                        padding: 0,
                     },
                 }}
             />
@@ -137,7 +145,6 @@ export default function Home() {
                     textAlign: "center",
                 }}
             >
-                {/* Search Bar with Custom Query Inputs */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -151,7 +158,6 @@ export default function Home() {
                     <TextField
                         variant="outlined"
                         placeholder="Search Products"
-                        value={searchTerm}
                         onChange={handleSearch}
                         sx={{ width: "100%", maxWidth: 400, bgcolor: '#c6ebc3' }}
                     />
@@ -165,9 +171,17 @@ export default function Home() {
                             <FullscreenIcon sx={{ fontSize: 100 }} />
                         </IconButton>
                     </Tooltip>
+                    <Tooltip title="Search" placement="right" arrow>
+                        <IconButton
+                            color="primary"
+                            onClick={() => fetchProductsDebounced(searchTerm)} // Handle Search Glass click
+                            sx={{ ml: 1 }}
+                        >
+                            <SearchIcon sx={{ fontSize: 40 }} />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
 
-                {/* Dropdown Menus for Queries */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -176,7 +190,6 @@ export default function Home() {
                         mb: 3,
                     }}
                 >
-                    {/* Country Dropdown */}
                     <Select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
@@ -203,11 +216,8 @@ export default function Home() {
                         <MenuItem value="south africa">South Africa</MenuItem>
                         <MenuItem value="spain">Spain</MenuItem>
                         <MenuItem value="turkey">Turkey</MenuItem>
-                        
-                        {/* Add more countries as needed */}
                     </Select>
 
-                    {/* Sort By Dropdown */}
                     <Select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
@@ -221,7 +231,6 @@ export default function Home() {
                         <MenuItem value="ecoscore_score">Eco Score</MenuItem>
                     </Select>
 
-                    {/* Category Dropdown */}
                     <Select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
@@ -273,6 +282,7 @@ export default function Home() {
                                     display: 'flex',
                                     justifyContent: 'center',
                                 }}
+                                onClick={() => handleProductClick(product)}
                             >
                                 <Paper elevation={5} sx={{ padding: 2, textAlign: "center", width: '100%', borderRadius: 10 ,  
                                     '&:hover': { border: '5px solid' , borderColor:(theme) => theme.palette.primary.main },}}>
@@ -352,6 +362,39 @@ export default function Home() {
                 )}
 
             </Box>
+            <Modal
+  open={openModal}
+  onClose={handleCloseModal}
+  closeAfterTransition
+  sx={{
+    zIndex: 1200, // Ensure it's above the Go To Bar
+  }}
+>
+  <Fade in={openModal}>
+    <Box
+      sx={{
+        backgroundImage: "url('/images/gradient2.png')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+        width: '55%',
+        maxHeight: '80%',
+        transform: 'translate(-50%, -50%)',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        overflowY: 'auto',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+      }}
+    >
+      {selectedProduct && <ProductDisplay productData={selectedProduct} />}
+    </Box>
+  </Fade>
+</Modal>
+
         </ThemeProvider>
     );
 }

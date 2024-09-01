@@ -27,7 +27,6 @@ const ProductDisplay = ({ productData }) => {
   const [imageError, setImageError] = useState(false);
   const [additives, setAdditives] = useState([]);
   const [additivesData, setAdditivesData] = useState(null);
-  
 
   const nutritionalRef = useRef(null);
   const healthRef = useRef(null);
@@ -61,7 +60,7 @@ const ProductDisplay = ({ productData }) => {
     const nutriScoreUrl = `https://static.openfoodfacts.org/images/misc/nutriscore-${nutriScoreGrade.toLowerCase()}.svg`;
 
     return (
-      <Image
+      <img
         src={nutriScoreUrl}
         alt={`Nutri-Score ${nutriScoreGrade.toUpperCase()}`}
         style={{ width: "100px", height: "auto" }} // Adjust the size as needed
@@ -73,7 +72,7 @@ const ProductDisplay = ({ productData }) => {
     const novaGroupUrl = `https://static.openfoodfacts.org/images/misc/nova-group-${novaGroup}.svg`;
 
     return (
-      <Image
+      <img
         src={novaGroupUrl}
         alt={`NOVA Group ${novaGroup}`}
         style={{ width: "20px", height: "auto" }} // Adjust the size as needed
@@ -85,7 +84,7 @@ const ProductDisplay = ({ productData }) => {
     const ecoScoreUrl = `https://static.openfoodfacts.org/images/misc/ecoscore/ecoscore-${ecoScoreGrade.toLowerCase()}.svg`;
 
     return (
-      <Image
+      <img
         src={ecoScoreUrl}
         alt={`Eco-Score ${ecoScoreGrade.toUpperCase()}`}
         style={{ width: "40px", height: "auto" }} // Adjust the size as needed
@@ -201,8 +200,6 @@ const ProductDisplay = ({ productData }) => {
     );
   };
 
-  
-
   useEffect(() => {
     const fetchAdditives = async () => {
       try {
@@ -254,8 +251,10 @@ const ProductDisplay = ({ productData }) => {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center center",
-          minHeight: "100vh", // Changed from height to minHeight
+          minHeight: "100vh",
           width: "100%",
+          position: "relative", // Ensure it's positioned relative to the parent
+          overflow: 'hidden', // To ensure no overflow affects layout
         }}
         textAlign={"center"}
         justifyContent={"center"}
@@ -265,11 +264,12 @@ const ProductDisplay = ({ productData }) => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            mb: 4,
-            position: "fixed",
+            position: "fixed", // Ensure it's fixed
+            top: 0, // Stick to the bottom of the viewport
             bgcolor: "primary.main",
             width: "100%",
-            zIndex: 100,
+            zIndex: 1100, // Ensure it's above other content
+            // padding: 1,
           }}
         >
           <Button
@@ -341,7 +341,7 @@ const ProductDisplay = ({ productData }) => {
               {!productData.image_url ? (
                 <NoFoodIcon sx={{ fontSize: "1800%", color: "gray" }} />
               ) : (
-                <Image
+                <img
                   src={productData.image_url}
                   alt="Product"
                   onError={handleError}
@@ -363,12 +363,15 @@ const ProductDisplay = ({ productData }) => {
               <Typography variant="body1" mb={3}>
                 <strong>Barcode</strong>: {productData.code}
               </Typography>
-              {productData.generic_name ? <Typography variant="body1" mb={3}>
-                {" "}
-                <strong>Common Name</strong>: {productData.generic_name}
-              </Typography> : null}
+              {productData.generic_name ? (
+                <Typography variant="body1" mb={3}>
+                  {" "}
+                  <strong>Common Name</strong>: {productData.generic_name}
+                </Typography>
+              ) : null}
               <Typography variant="body1" mb={3}>
-                <strong>Quantity</strong>:{productData.quantity ? productData.quantity : " N/A"}
+                <strong>Quantity</strong>:
+                {productData.quantity ? productData.quantity : " N/A"}
               </Typography>
               <Typography variant="body1" mb={3}>
                 <strong>Brand</strong>: {productData.brands}
@@ -791,16 +794,18 @@ const ProductDisplay = ({ productData }) => {
                         </Typography>
                       </Typography>
                       <Typography variant="body1" sx={{ mt: 2 }}>
-                        {productData.additives_tags.length > 0 ? (
-                          <>
-                            Elements that indicate the product is in the 4 -
-                            Ultra processed food and drink products group:
-                            <Typography sx={{ mt: 1 }}>
-                              {additives.map((item, index) => (
-                                <Typography key={index}>{item}</Typography>
-                              ))}
-                            </Typography>
-                          </>
+                        {productData.additives_tags ? (
+                          productData.additives_tags.length > 0 ? (
+                            <>
+                              Elements that indicate the product is in the 4 -
+                              Ultra processed food and drink products group:
+                              <Typography sx={{ mt: 1 }}>
+                                {additives.map((item, index) => (
+                                  <Typography key={index}>{item}</Typography>
+                                ))}
+                              </Typography>
+                            </>
+                          ) : null
                         ) : null}
                       </Typography>
                     </AccordionDetails>
@@ -809,68 +814,27 @@ const ProductDisplay = ({ productData }) => {
                   <Typography variant="h6" mb={2} mt={2}>
                     <strong>Ingredient Analysis</strong>
                   </Typography>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography variant="body1">
-                        {productData.ingredients_analysis_tags
-                          ? productData.ingredients_analysis_tags[0]
-                              .replace("en:", "")
-                              .replace(/-/g, " ")
-                          : "Palm oil status not computed"}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography variant="body2">
-                        {productData.ingredients_analysis_tags
-                          ? ingredientAnalysis[
-                              productData.ingredients_analysis_tags[0]
-                            ]
-                          : "No description available"}
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
+                  {productData.ingredients_analysis_tags?.map((tag, index) => {
+                    // Replace 'en:' and '-' in the tag
+                    const cleanedTag = tag
+                      ? tag.replace("en:", "").replace(/-/g, " ")
+                      : defaultLabels[index] || "No description available";
 
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography variant="body1">
-                        {productData.ingredients_analysis_tags
-                          ? productData.ingredients_analysis_tags[1]
-                              .replace("en:", "")
-                              .replace(/-/g, " ")
-                          : "Vegan status not computed"}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography variant="body2">
-                        {productData.ingredients_analysis_tags
-                          ? ingredientAnalysis[
-                              productData.ingredients_analysis_tags[1]
-                            ]
-                          : "No description available"}
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
+                    // Get description for the tag or use default
+                    const description =
+                      ingredientAnalysis[tag] || "No description available";
 
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography variant="body1">
-                        {productData.ingredients_analysis_tags
-                          ? productData.ingredients_analysis_tags[2]
-                              .replace("en:", "")
-                              .replace(/-/g, " ")
-                          : "Vegetarian status not computed"}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography variant="body2">
-                        {productData.ingredients_analysis_tags
-                          ? ingredientAnalysis[
-                              productData.ingredients_analysis_tags[2]
-                            ]
-                          : "No description available"}
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
+                    return (
+                      <Accordion key={index}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant="body1">{cleanedTag}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography variant="body2">{description}</Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })}
                 </AccordionDetails>
               </Accordion>
             </Box>

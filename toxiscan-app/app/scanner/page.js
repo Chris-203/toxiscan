@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, theme } from "react";
 import {
   Button,
   Box,
@@ -13,10 +13,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  ThemeProvider
 } from "@mui/material";
 import { BarcodeDetector } from "barcode-detector";
 import Image from "next/image";
 import ProductDisplay from "../components/ProductDisplay";
+import CustomTheme from "../components/Theme";
+import CustomAppBar from "../components/CustomAppBar";
 
 const BarcodeScanner = () => {
   const [barcode, setBarcode] = useState(null);
@@ -150,8 +153,10 @@ const BarcodeScanner = () => {
   };
 
   return (
+    <ThemeProvider theme={CustomTheme}>
+        <CustomAppBar />
     <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 10 }}
     >
       <Box
         sx={{
@@ -174,7 +179,7 @@ const BarcodeScanner = () => {
         </Box>
 
         {productData && <ProductDisplay productData={productData} />}
-        {TryAgain && (
+        {TryAgain && !productData && (
           <Box
             sx={{
               display: "flex",
@@ -262,6 +267,7 @@ const BarcodeScanner = () => {
         Start Scanning
       </Button>
     </Box>
+    </ThemeProvider>
   );
 };
 
