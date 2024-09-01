@@ -172,15 +172,7 @@ export default function Home() {
               bgcolor: "#c6ebc3",
             }}
           />
-          <Tooltip title="Use Scanner" placement="right" arrow>
-            <IconButton
-              color="primary"
-              onClick={handleScanClick}
-              sx={{ mt: 2 }} // Margin top to create space between search bar and button
-            >
-              <FullscreenIcon sx={{ fontSize: 100 }} />
-            </IconButton>
-          </Tooltip>
+          
           <Tooltip title="Search" placement="right" arrow>
             <IconButton
               color="primary"
@@ -188,6 +180,16 @@ export default function Home() {
               sx={{ ml: 1 }}
             >
               <SearchIcon sx={{ fontSize: 40 }} />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Use Scanner" placement="right" arrow>
+            <IconButton
+              color="primary"
+              onClick={handleScanClick}
+              sx={{ mt: 2 }} // Margin top to create space between search bar and button
+            >
+              <FullscreenIcon sx={{ fontSize: 100 }} />
             </IconButton>
           </Tooltip>
         </Box>
