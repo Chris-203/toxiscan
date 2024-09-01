@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, theme } from "react";
 import {
   Button,
   Box,
@@ -13,10 +13,14 @@ import {
   TableHead,
   TableRow,
   Paper,
+  ThemeProvider,
+  Toolbar,
 } from "@mui/material";
 import { BarcodeDetector } from "barcode-detector";
 import Image from "next/image";
 import ProductDisplay from "../components/ProductDisplay";
+import CustomTheme from "../components/Theme";
+import CustomAppBar from "../components/CustomAppBar";
 
 const BarcodeScanner = () => {
   const [barcode, setBarcode] = useState(null);
@@ -150,118 +154,133 @@ const BarcodeScanner = () => {
   };
 
   return (
-    <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <ThemeProvider theme={CustomTheme}>
+      <CustomAppBar />
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" }, // Change direction based on screen width
+          flexDirection: "column",
           alignItems: "center",
-          width: "100%",
-          justifyContent: "center",
+          // mt: 1,
         }}
       >
-        <Box>
-          <video
-            ref={videoRef}
-            style={{
-              width: "100%",
-              height: "100%",
-              display: cameraActive ? "block" : "none",
-            }}
-          />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" }, // Change direction based on screen width
+            alignItems: "center",
+            width: "100%",
+            justifyContent: "center",
+          }}
+        >
+          <Box>
+            <video
+              ref={videoRef}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: cameraActive ? "block" : "none",
+              }}
+            />
+          </Box>
+
+          {productData && (
+            <Box>
+              <CustomAppBar />
+              <Toolbar />
+              <ProductDisplay productData={productData} />
+            </Box>
+          )}
+          {TryAgain && !productData && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <Typography variant="body1" align="center">
+                No product data found for the barcode.
+              </Typography>
+              <Typography variant="body1" align="center">
+                Please Try Again
+              </Typography>
+            </Box>
+          )}
         </Box>
 
-        {productData && <ProductDisplay productData={productData} />}
-        {TryAgain && (
+        {isSearching && !isScanning && (
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, 90%)",
+              color: "lightblue",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              padding: "10px",
+              borderRadius: "5px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              zIndex: 1,
+              textAlign: "center",
             }}
           >
-            <Typography variant="body1" align="center">
-              No product data found for the barcode.
-            </Typography>
-            <Typography variant="body1" align="center">
-              Please Try Again
-            </Typography>
+            <Typography variant="body1">Searching for Barcode...</Typography>
+            <Box sx={{ marginTop: "10px" }}>
+              <CircularProgress color="inherit" size={24} />
+            </Box>
           </Box>
         )}
-      </Box>
-
-      {isSearching && !isScanning && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, 90%)",
-            color: "lightblue",
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
-            padding: "10px",
-            borderRadius: "5px",
-            fontSize: "16px",
-            fontWeight: "bold",
-            zIndex: 1,
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="body1">Searching for Barcode...</Typography>
-          <Box sx={{ marginTop: "10px" }}>
-            <CircularProgress color="inherit" size={24} />
+        {isScanning && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, 90%)",
+              color: "green",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              padding: "10px",
+              borderRadius: "5px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              zIndex: 1,
+            }}
+          >
+            <Typography variant="body1">Scanning Barcode...</Typography>
           </Box>
-        </Box>
-      )}
-      {isScanning && (
+        )}
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, 90%)",
-            color: "green",
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
-            padding: "10px",
-            borderRadius: "5px",
-            fontSize: "16px",
+            marginTop: "10px",
+            color: barcode ? "green" : "red",
+            fontSize: "18px",
             fontWeight: "bold",
-            zIndex: 1,
+            mt: 12,
           }}
         >
-          <Typography variant="body1">Scanning Barcode...</Typography>
+          <Typography variant="body1">
+            Detected Barcode: {barcode || "None"}
+          </Typography>
         </Box>
-      )}
-      <Box
-        sx={{
-          marginTop: "10px",
-          color: barcode ? "green" : "red",
-          fontSize: "18px",
-          fontWeight: "bold",
-        }}
-      >
-        <Typography variant="body1">
-          Detected Barcode: {barcode || "None"}
-        </Typography>
+        {error && (
+          <Box sx={{ color: "red", marginTop: "10px" }}>
+            <Typography variant="body1">{error}</Typography>
+          </Box>
+        )}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleStartScan}
+          disabled={cameraActive}
+          sx={{ marginTop: "10px", mb: 3 }}
+        >
+          Start Scanning
+        </Button>
       </Box>
-      {error && (
-        <Box sx={{ color: "red", marginTop: "10px" }}>
-          <Typography variant="body1">{error}</Typography>
-        </Box>
-      )}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleStartScan}
-        disabled={cameraActive}
-        sx={{ marginTop: "10px" }}
-      >
-        Start Scanning
-      </Button>
-    </Box>
+    </ThemeProvider>
   );
 };
 

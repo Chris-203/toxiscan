@@ -1,45 +1,59 @@
-'use client';
-import { Box, Typography, Toolbar, ThemeProvider, useTheme, GlobalStyles} from "@mui/material";
+"use client";
+import {
+  Box,
+  Typography,
+  Toolbar,
+  ThemeProvider,
+  useTheme,
+  GlobalStyles,
+} from "@mui/material";
 import Image from "next/image";
-import CustomAppBar from '../components/CustomAppBar'; 
-import CustomTheme from '../components/Theme'; 
+import CustomAppBar from "../components/CustomAppBar";
+import CustomTheme from "../components/Theme";
 
 export default function AboutUs() {
   const theme = useTheme();
 
   return (
     <ThemeProvider theme={CustomTheme}>
-                  {/* Global Styles to set the background color of the whole screen */}
-                  <GlobalStyles
+      {/* Global Styles to set the background color of the whole screen */}
+      <GlobalStyles
         styles={{
           body: {
-            backgroundColor: '#9fdf9c', // Set your desired background color here
+            backgroundColor: "#9fdf9c", // Set your desired background color here
           },
         }}
       />
       <CustomAppBar /> {/* Custom AppBar at the top */}
-      <Toolbar/> {/* Toolbar to create space for the AppBar */}
+      <Toolbar /> {/* Toolbar to create space for the AppBar */}
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          minHeight: '100vh',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          minHeight: "100vh",
           padding: 4,
-          paddingTop: `calc(${theme.mixins.toolbar.minHeight}px + ${theme.spacing(1)})`, // Adjust padding-top to account for AppBar and Toolbar
-          overflow: 'hidden',
+          paddingTop: `calc(${
+            theme.mixins.toolbar.minHeight
+          }px + ${theme.spacing(1)})`, // Adjust padding-top to account for AppBar and Toolbar
+          overflow: "hidden",
         }}
       >
-        <Typography variant="h1" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography
+          variant="h1"
+          component="h1"
+          gutterBottom
+          sx={{ fontWeight: "bold" }}
+        >
           About Us
         </Typography>
-        
+
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            width: '100%',
-            maxWidth: '1200px',
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            width: "100%",
+            maxWidth: "1200px",
             gap: 4,
             marginTop: 4,
           }}
@@ -47,30 +61,50 @@ export default function AboutUs() {
           <Box
             sx={{
               flex: 1,
-              textAlign: 'left',
-              maxWidth: { xs: '100%', sm: '50%' },
+              textAlign: "left",
+              maxWidth: { xs: "100%", sm: "50%" },
             }}
           >
-            <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", marginBottom: 2 }}
+            >
               Welcome to our Toxiscan app!
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1.25rem', marginBottom: 2 }}>
-              We are a team of three passionate and dedicated software engineering students united by our passion for technology and innovation. Our mission is to revolutionize food safety and chemical understanding through technology, so we created this Toxiscan app. Through this app, our goal is to develop cutting-edge solutions that address real-world challenges and make a meaningful impact.
+            <Typography
+              variant="body1"
+              sx={{ fontSize: "1.25rem", marginBottom: 2 }}
+            >
+              We are a team of three passionate and dedicated software
+              engineering students united by our passion for technology and
+              innovation. Our mission is to revolutionize food safety and
+              chemical understanding through technology, so we created this
+              Toxiscan app. Through this app, our goal is to develop
+              cutting-edge solutions that address real-world challenges and make
+              a meaningful impact.
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-              The Toxiscan app is designed to empower users with crucial information about the chemicals in their food. By offering an intuitive and user-friendly platform, we aim to help people make informed decisions about their diet and health. Our app enables users to easily scan their food and understand the presence of potentially harmful chemicals, promoting a safer and more conscious approach to food consumption. Sign into Toxiscan today to start exploring the chemicals in your food and make smarter, healthier choices. Thank you for joining us on this journey toward safer and healthier living!
+            <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
+              The Toxiscan app is designed to empower users with crucial
+              information about the chemicals in their food. By offering an
+              intuitive and user-friendly platform, we aim to help people make
+              informed decisions about their diet and health. Our app enables
+              users to easily scan their food and understand the presence of
+              potentially harmful chemicals, promoting a safer and more
+              conscious approach to food consumption. Sign into Toxiscan today
+              to start exploring the chemicals in your food and make smarter,
+              healthier choices. Thank you for joining us on this journey toward
+              safer and healthier living!
             </Typography>
           </Box>
-          
+
           <Box
             sx={{
               flex: 1,
-              textAlign: 'center',
-              maxWidth: { xs: '100%', sm: '50%' },
-              marginLeft: { xs: 0, sm: 'auto' }, // Adjust marginLeft to position the image
-              transform: { xs: 'none', sm: 'translateX(50px)' }, // Optional: Use transform to nudge image further to the right
+              textAlign: "center",
+              maxWidth: { xs: "100%", sm: "50%" },
+              marginLeft: { xs: 0, sm: "auto" }, // Adjust marginLeft to position the image
+              transform: { xs: "none", sm: "translateX(50px)" }, // Optional: Use transform to nudge image further to the right
             }}
-          
           >
             <Image
               src="/images/Toxiscanlogo.png"
