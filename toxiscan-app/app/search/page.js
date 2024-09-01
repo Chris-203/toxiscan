@@ -19,7 +19,9 @@ import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
 import { useEffect, useState } from "react";
 import { NoFood as NoFoodIcon } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search"; // Import SearchIcon
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+
 
 export default function Home() {
     const theme = useTheme();
@@ -28,13 +30,24 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [country, setCountry] = useState("united states");
-    const [sortBy, setSortBy] = useState("popularity");
+    const [country, setCountry] = useState("");
+    const [sortBy, setSortBy] = useState("");
     const [category, setCategory] = useState(""); // New state for category
     const [page, setPage] = useState(1); // Add state for current page
+    const [showScrollUp, setShowScrollUp] = useState(false);
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
+        // Scroll back to the top of the page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const scrollToBottom = () => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    };
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     useEffect(() => {
@@ -65,6 +78,21 @@ export default function Home() {
 
         fetchProducts();
     }, [country, sortBy, category, page]); // Add page as a dependency
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 300) { // Adjust this value as needed
+                setShowScrollUp(true);
+            } else {
+                setShowScrollUp(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -287,6 +315,30 @@ export default function Home() {
                         Next
                     </Button>
                 </Box>
+
+                {/* Scroll to Bottom Button */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                <IconButton
+                    color="primary"
+                    onClick={scrollToBottom}
+                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                >
+                    <ArrowDownwardIcon sx={{ fontSize: 40 }} />
+                </IconButton>
+            </Box>
+
+             {/* Scroll to Top Button */}
+             {showScrollUp && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                        <IconButton
+                            color="primary"
+                            onClick={scrollToTop}
+                            sx={{ position: 'fixed', bottom: 80, right: 16 }}
+                        >
+                            <ArrowUpwardIcon sx={{ fontSize: 40 }} />
+                        </IconButton>
+                    </Box>
+                )}
 
             </Box>
         </ThemeProvider>
