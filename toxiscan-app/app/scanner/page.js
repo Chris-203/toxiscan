@@ -26,6 +26,7 @@ const BarcodeScanner = () => {
   const [cameraActive, setCameraActive] = useState(false);
   const [waitingToStopCamera, setWaitingToStopCamera] = useState(false); // New variable
   const [productData, setProductData] = useState(null); // New state for product data
+  const [TryAgain, setTryAgain] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -71,6 +72,12 @@ const BarcodeScanner = () => {
 
               // Fetch product data
               fetchProductDetails(detectedBarcode);
+
+              // If not product data found, stop camera and set try again to true
+              if (!productData) {
+                setCameraActive(false);
+                setTryAgain(true);
+              }
 
               // Disable scanning and stop camera after 1 second
               setTimeout(() => {
@@ -155,20 +162,34 @@ const BarcodeScanner = () => {
           justifyContent: "center",
         }}
       >
-        <Box
-      >
-        <video
-          ref={videoRef}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: cameraActive ? "block" : "none",
-          }}
-        />
-      </Box>
+        <Box>
+          <video
+            ref={videoRef}
+            style={{
+              width: "100%",
+              height: "100%",
+              display: cameraActive ? "block" : "none",
+            }}
+          />
+        </Box>
 
-        {productData && (
-          <ProductDisplay productData={productData} />
+        {productData && <ProductDisplay productData={productData} />}
+        {TryAgain && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <Typography variant="body1" align="center">
+              No product data found for the barcode.
+            </Typography>
+            <Typography variant="body1" align="center">
+              Please Try Again
+            </Typography>
+          </Box>
         )}
       </Box>
 
