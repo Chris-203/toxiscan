@@ -437,8 +437,8 @@ const ProductDisplay = ({ productData }) => {
               }}
             >
               <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant="h6">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{bgcolor: "primary.main"}}>
+                  <Typography variant="h5" sx={{color: "white"}}>
                     <strong>Nutritional Information</strong>
                   </Typography>
                 </AccordionSummary>
@@ -513,8 +513,8 @@ const ProductDisplay = ({ productData }) => {
               }}
             >
               <Accordion sx={{ bgcolor: "white" }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant="h5">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}sx={{bgcolor: "primary.main"}}>
+                  <Typography variant="h5" sx={{color:"white"}}>
                     <strong>Health</strong>
                   </Typography>
                 </AccordionSummary>
@@ -874,8 +874,8 @@ const ProductDisplay = ({ productData }) => {
               }}
             >
               <Accordion sx={{ bgcolor: "white" }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant="h5">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}sx={{bgcolor: "primary.main"}}>
+                  <Typography variant="h5" sx={{color:"white"}}>
                     <strong>Environment</strong>
                   </Typography>
                 </AccordionSummary>
