@@ -7,7 +7,7 @@ import CustomAppBar from '../components/CustomAppBar';
 import React, { useState } from 'react';
 
 
-export default function contactPage() {
+export default function ContactPage() {
     const theme = useTheme(); // Access theme using useTheme hook
     const [formData, setFormData] = useState({
         name: '',

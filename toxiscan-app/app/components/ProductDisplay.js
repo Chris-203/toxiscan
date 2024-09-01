@@ -24,13 +24,15 @@ import { Link } from "@mui/material";
 
 const ProductDisplay = ({ productData }) => {
   const [imageError, setImageError] = useState(false);
-  if (!productData) return null;
+  const [additives, setAdditives] = useState([]);
+  const [additivesData, setAdditivesData] = useState(null);
+  
 
   const nutritionalRef = useRef(null);
   const healthRef = useRef(null);
   const productRef = useRef(null);
   const environmentalRef = useRef(null);
-
+  if (!productData) return null;
   const handleError = () => {
     setImageError(true);
   };
@@ -198,8 +200,7 @@ const ProductDisplay = ({ productData }) => {
     );
   };
 
-  const [additives, setAdditives] = useState([]);
-  const [additivesData, setAdditivesData] = useState(null);
+  
 
   useEffect(() => {
     const fetchAdditives = async () => {
