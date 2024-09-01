@@ -265,7 +265,7 @@ const ProductDisplay = ({ productData }) => {
             display: "flex",
             justifyContent: "center",
             position: "fixed", // Ensure it's fixed
-            top: 0, // Stick to the bottom of the viewport
+            // top: 0, // Stick to the bottom of the viewport
             bgcolor: "primary.main",
             width: "100%",
             zIndex: 1100, // Ensure it's above other content

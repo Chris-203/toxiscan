@@ -411,7 +411,9 @@ export default function Home() {
             }}
           >
             {selectedProduct && (
+                <Box sx={{mt: -4}}>
               <ProductDisplay productData={selectedProduct} />
+              </Box>
             )}
           </Box>
         </Fade>
