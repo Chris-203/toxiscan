@@ -44,6 +44,10 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   // Define the debounced API fetch function
   const fetchProductsDebounced = useCallback(
     debounce(async (search) => {
@@ -411,8 +415,8 @@ export default function Home() {
             }}
           >
             {selectedProduct && (
-                <Box sx={{mt: -4}}>
-              <ProductDisplay productData={selectedProduct} />
+              <Box sx={{ mt: -4 }}>
+                <ProductDisplay productData={selectedProduct} />
               </Box>
             )}
           </Box>

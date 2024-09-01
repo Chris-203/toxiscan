@@ -254,7 +254,7 @@ const ProductDisplay = ({ productData }) => {
           minHeight: "100vh",
           width: "100%",
           position: "relative", // Ensure it's positioned relative to the parent
-          overflow: 'hidden', // To ensure no overflow affects layout
+          overflow: "hidden", // To ensure no overflow affects layout
         }}
         textAlign={"center"}
         justifyContent={"center"}
@@ -355,10 +355,12 @@ const ProductDisplay = ({ productData }) => {
               justifyContent="left"
               textAlign="left"
             >
-              <Typography variant="h3" mb={5} sx={{fontSize: '4vh'}}>
-                {productData.product_name_en
-                  ? <strong>{productData.product_name_en}</strong>
-                  : <strong> {productData.product_name}</strong>}
+              <Typography variant="h3" mb={5} sx={{ fontSize: "4vh" }}>
+                {productData.product_name_en ? (
+                  <strong>{productData.product_name_en}</strong>
+                ) : (
+                  <strong> {productData.product_name}</strong>
+                )}
               </Typography>
               <Typography variant="body1" mb={3}>
                 <strong>Barcode</strong>: {productData.code}

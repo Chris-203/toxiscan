@@ -188,7 +188,7 @@ const BarcodeScanner = () => {
             <Box>
               <CustomAppBar />
               <Toolbar />
-              <ProductDisplay productData={productData}/>
+              <ProductDisplay productData={productData} />
             </Box>
           )}
           {TryAgain && !productData && (
