@@ -339,7 +339,7 @@ const ProductDisplay = ({ productData }) => {
               }}
             >
               {!productData.image_url ? (
-                <NoFoodIcon sx={{ fontSize: "1800%", color: "gray" }} />
+                <NoFoodIcon sx={{ fontSize: "35vh", color: "gray" }} />
               ) : (
                 <img
                   src={productData.image_url}
@@ -351,14 +351,14 @@ const ProductDisplay = ({ productData }) => {
             </Box>
 
             <Box
-              sx={{ flex: 1, padding: "16px", ml: 4 }}
+              sx={{ flex: 1, padding: "1px", ml: 4, width: "100%" }}
               justifyContent="left"
               textAlign="left"
             >
-              <Typography variant="h3" mb={5}>
+              <Typography variant="h3" mb={5} sx={{fontSize: '4vh'}}>
                 {productData.product_name_en
-                  ? productData.product_name_en
-                  : productData.product_name}
+                  ? <strong>{productData.product_name_en}</strong>
+                  : <strong> {productData.product_name}</strong>}
               </Typography>
               <Typography variant="body1" mb={3}>
                 <strong>Barcode</strong>: {productData.code}
