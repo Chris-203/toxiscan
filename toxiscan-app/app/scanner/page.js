@@ -21,8 +21,12 @@ import Image from "next/image";
 import ProductDisplay from "../components/ProductDisplay";
 import CustomTheme from "../components/Theme";
 import CustomAppBar from "../components/CustomAppBar";
+import { useUser } from "@clerk/nextjs"; // Import useUser hook
+import { useRouter } from 'next/navigation'; // Import useRouter for redirection
 
 const BarcodeScanner = () => {
+  const { isSignedIn } = useUser(); // Get authentication status
+  const router = useRouter(); // Initialize useRouter
   const [barcode, setBarcode] = useState(null);
   const [error, setError] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -34,6 +38,13 @@ const BarcodeScanner = () => {
   const videoRef = useRef(null);
 
   useEffect(() => {
+
+        // Redirect to login if user is not signed in
+        if (!isSignedIn) {
+          router.push('/sign-in'); // Redirect to the sign-in page
+          return;
+        }
+
     const startCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -126,7 +137,7 @@ const BarcodeScanner = () => {
     return () => {
       stopCamera(); // Ensure the camera stops when the component is unmounted
     };
-  }, [cameraActive, isSearching, waitingToStopCamera]); // Add waitingToStopCamera as a dependency
+  }, [cameraActive, isSearching, waitingToStopCamera,isSignedIn]); // Add waitingToStopCamera as a dependency
 
   const fetchProductDetails = async (barcode) => {
     setIsSearching(true);
